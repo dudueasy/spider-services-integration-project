@@ -1,25 +1,34 @@
-class Subscription{
-    constructor( userId, url){
-        this.userId = userId
-        this.url = url
-    }
+let mongoose = require('mongoose')
 
-    static list(){
-        return Subscription.subscriptions
-    }
+const {Schema} = mongoose
 
-    static insert(userId, url){
-        const sub = new Subscription(userId, url)
-        Subscription.subscriptions.push(sub)
-        return sub
-    }
+// get ObjectId constructor
+let {ObjectId} = Schema.Types
 
-    static findByUserId(userId){
-        return Subscription.subscriptions.map(sub => sub.userId = userId)
-    }
+let SubSchema = new Schema({
+  userId :{type: ObjectId, required: true, index: 1},
+  url:{String, required: true}
+})
+
+let SubModel = mongoose.model('Sub', SubSchema)
+
+async function insert(sub){
+  return SubModel.create(sub)
 }
 
+async function list(params) {
+  let match = {}
+  let flow = SubModel.find(match)
+  let subs = await flow.exec()
+  return subs
+}
 
-Subscription.subscriptions = []
+async function findByUserId(userId) {
+  return await SubModel.findOne({ userId })
+}
 
-module.exports=Subscription
+module.exports = {
+ insert,
+  list,
+  findByUserId,
+}
