@@ -7,11 +7,11 @@ mongoose.connect(uri,{ useNewUrlParser: true } )
 let db = mongoose.connection
 
 db.on('open', ()=>{
-console.log('connected')
+console.log('mongodb connected')
 })
 
 db.on('error', (e)=>{
-  console.log(e)
+  console.log('mongodb connection error: ', e)
 })
 
 module.exports = db

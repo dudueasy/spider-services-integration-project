@@ -1,11 +1,21 @@
-var express = require('express');
-var router = express.Router();
-var UserService = require('../services/user_service.js')
+let express = require('express');
+let router = express.Router();
+let UserService = require('../services/user_service.js')
+let HTTPReqParamError = require('../errors/http_request_param_error')
 
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
-  let allUsers = await UserService.getAllUsers()
-  res.render('users', {users:allUsers} )
+  (async()=>{
+    throw new HTTPReqParamError('id', 'id not found')
+
+    return await UserService.getAllUsers()
+  })()
+    .then((allUsers)=>{
+      res.render('users', {users:allUsers}
+      )}
+    )
+    // 如果发现错误就用 next(e) 传递给错误处理中间件
+    .catch(e=>{next(e)})
 });
 
 router.post('/', async (req, res)=>{
@@ -17,19 +27,28 @@ router.post('/', async (req, res)=>{
 
 
 })
-router.get('/:userId', async (req, res) => {
-  let userId = Number(req.params.userId)
 
-  try {
-    let user = await UserService.getUserById(userId)
-    console.log('userId: ', userId)
-    let result = new Array(UserService.findUser(userId))
-    res.render('User', {users: result})
-  } catch (error) {
-    res.end('找不到用户')
-  }
+router.get('/:userId', async (req, res,next) => {
+
+  (async()=>{
+    let userId = req.params.userId
+    if(userId.length < 5){
+      throw new HTTPReqParamError('userId','用户id不能为空')
+    }
+    else{
+
+      console.log('userId.length > 5')
+      let user = await UserService.getUserById(userId)
+      let result = new Array(UserService.findUser(userId))
+      res.render('User', {users: result})
+    }
+  })()
+    .then()
+    .catch((e)=>{
+      next(e)
+    })
+
 })
-
 
 router.get('/:userId/subscription', (req, res) => {
   try {
@@ -45,9 +64,5 @@ router.post('/:userId/subscription', (req, res) => {
   let newSub = UserService.createSubscript(req.params.userId, req.body.url)
   res.render('Sub', {subscription: newSub})
 })
-
-
-
-
 
 module.exports = router;

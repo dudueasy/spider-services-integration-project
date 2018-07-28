@@ -25,7 +25,6 @@ async function list(params){
   let match = {}
   let flow = UserModel.find(match)
   flow =  await flow.exec().then((r)=>{return r})
-  console.log(flow)
   return flow
 }
 
