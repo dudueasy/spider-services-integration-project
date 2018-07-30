@@ -8,11 +8,14 @@
 ```
   localhost:3000/api/login?username=apolo
 ```
+
     * 模拟登陆页面:
         * for JWT (request header is required):
+
 ```
   localhost:3000/api/hello
 ```
+
         * for express-session:
 
 ```
