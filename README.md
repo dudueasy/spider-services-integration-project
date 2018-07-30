@@ -5,20 +5,20 @@
   * 测试
     * 模拟注册页面:
 
-    ```
-  localhost:3000/api/login?username=apolo
-    ```
+```
+localhost:3000/api/login?username=apolo
+```
 
 
     * 模拟登陆页面:
         * for JWT (request header is required):
 
-    ```
-  localhost:3000/api/hello
-    ```
+```
+localhost:3000/api/hello
+```
 
         * for express-session:
 
-    ```
-  localhost:3000/api/hello-session
-    ```
+```
+localhost:3000/api/hello-session
+```
