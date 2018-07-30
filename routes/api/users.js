@@ -1,11 +1,12 @@
 let express = require('express');
 let router = express.Router();
-let UserService = require('../services/user_service.js')
-let HTTPReqParamError = require('../errors/http_request_param_error')
+let UserService = require('../../services/user_service.js')
+let HTTPReqParamError = require('../../errors/http_request_param_error')
 
 /* GET users listing. */
 router.get('/', async function(req, res, next) {
   (async()=>{
+    // 抛出异常的实例:
     throw new HTTPReqParamError('id', 'id not found')
 
     return await UserService.getAllUsers()

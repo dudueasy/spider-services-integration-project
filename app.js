@@ -2,9 +2,12 @@ let createError = require('http-errors');
 let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
+let bodyParser = require('body-parser')
+
+let session = require('express-session')
 // let logger = require('morgan');
-let indexRouter = require('./routes/index');
-let usersRouter = require('./routes/users');
+let indexRouter = require('./routes/api/index');
+let usersRouter = require('./routes/api/users');
 
 let logger = require('./utils/loggers/logger')
 
@@ -25,10 +28,20 @@ app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// apply express-session middleware
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  // cookie:{secure: true}
+}))
+
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/user', usersRouter);
+app.use('/api', indexRouter);
+app.use('/api/user', usersRouter);
 
 
 // error handling middleware for HTTPBaseError type errors

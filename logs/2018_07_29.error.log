@@ -1,0 +1,90 @@
+2018-07-29T07:50:35.155Z - error: error: Header name must be a valid HTTP Token ["Set-Cookie:"]
+2018-07-29T07:52:03.015Z - error: error: First argument must be a string or Buffer
+2018-07-29T07:52:04.695Z - error: error: First argument must be a string or Buffer
+2018-07-29T07:53:43.720Z - error: error: First argument must be a string or Buffer stack=TypeError: First argument must be a string or Buffer
+    at ServerResponse.end (_http_outgoing.js:742:13)
+    at router.get (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/routes/api/index.js:11:7)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:281:22
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+    at Function.handle (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:174:3)
+    at router (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:47:12)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:317:13)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:284:7
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+2018-07-29T08:12:51.163Z - error: http error: HTTP ERROR: id wrong: id not found , url=/api/user, userInfo=undefined
+2018-07-29T09:25:02.587Z - error: http error: HTTP ERROR: id wrong: id not found username=apolo, url=/api/user?username=apolo, userInfo=undefined
+2018-07-29T09:25:35.464Z - error: error: Cannot read property 'username' of undefined stack=TypeError: Cannot read property 'username' of undefined
+    at router.get (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/routes/api/index.js:32:38)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:281:22
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+    at Function.handle (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:174:3)
+    at router (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:47:12)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:317:13)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:284:7
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+    at SendStream.error (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/serve-static/index.js:121:7)
+2018-07-29T09:27:35.465Z - error: error: Cannot read property 'username' of undefined stack=TypeError: Cannot read property 'username' of undefined
+    at router.get (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/routes/api/index.js:32:38)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:281:22
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+    at Function.handle (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:174:3)
+    at router (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:47:12)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:317:13)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:284:7
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+    at SendStream.error (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/serve-static/index.js:121:7)
+2018-07-29T09:27:38.308Z - error: error: Cannot read property 'username' of undefined stack=TypeError: Cannot read property 'username' of undefined
+    at router.get (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/routes/api/index.js:32:38)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:281:22
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+    at Function.handle (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:174:3)
+    at router (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:47:12)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:317:13)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:284:7
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+    at SendStream.error (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/serve-static/index.js:121:7)
+2018-07-29T13:45:38.381Z - error: error: users is not defined stack=ReferenceError: users is not defined
+    at router.get (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/routes/api/index.js:22:15)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:137:13)
+    at Route.dispatch (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/route.js:112:3)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:281:22
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+    at Function.handle (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:174:3)
+    at router (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:47:12)
+    at Layer.handle [as handle_request] (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/layer.js:95:5)
+    at trim_prefix (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:317:13)
+    at /Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:284:7
+    at Function.process_params (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:335:12)
+    at next (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/express/lib/router/index.js:275:10)
+    at SendStream.error (/Users/apolodu/Documents/My_projects/express-generator-demo/express-generator-demo/node_modules/serve-static/index.js:121:7)

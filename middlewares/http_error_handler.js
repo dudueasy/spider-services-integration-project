@@ -13,7 +13,7 @@ function httpErrorHandler(err, req, res,next){
     let errorMeta = {
       query: req.query,
       url: req.originalUrl,
-      userInfo: req.user
+      userInfo: req.user,
     }
 
     // logger(level, msg,...[,meta,callback])
