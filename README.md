@@ -9,3 +9,7 @@
         * for JWT (request header is required): ``` localhost:3000/api/hello ```
 
         * for express-session: ``` localhost:3000/api/hello-session ```
+        
+  * 项目入口: bin/www
+        
+     
