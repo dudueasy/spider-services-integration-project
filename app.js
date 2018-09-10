@@ -11,8 +11,8 @@ let usersRouter = require('./routes/api/users');
 
 let logger = require('./utils/loggers/logger')
 
-let errorHandler = require('./middlewares/http_error_handler')
-let handler = require('./middlewares/error_handler')
+let HttpErrorHandler = require('./middlewares/http_error_handler')
+let errorHandler = require('./middlewares/error_handler')
 
 
 // connect to mongodb
@@ -45,10 +45,10 @@ app.use('/api/user', usersRouter);
 
 
 // error handling middleware for HTTPBaseError type errors
-app.use(errorHandler);
+app.use(HttpErrorHandler());
 
 // error handling middleware for other type of errors
-app.use(handler)
+app.use(errorHandler)
 
 process.on('uncaughtException' ,(err)=>{
   logger('error', 'uncaughtException error: %s', err.message)

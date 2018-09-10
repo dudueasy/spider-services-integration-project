@@ -9,3 +9,12 @@
         * for JWT (request header is required): ``` localhost:3000/api/hello ```
 
         * for express-session: ``` localhost:3000/api/hello-session ```
+
+
+* 错误处理和日志
+  * 通过 winston 完成错误日志的记录
+  * 流程图:
+[Error handling flow](./error-handling-flow.png)
+
+
+
