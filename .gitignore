@@ -1,3 +1,7 @@
 .idea/
 .vscode/
 node_modules/
+.env
+db/*
+logs/*
+spider_demo*

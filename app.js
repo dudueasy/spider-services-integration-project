@@ -5,7 +5,6 @@ let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser')
 
 let session = require('express-session')
-// let logger = require('morgan');
 let indexRouter = require('./routes/api/index');
 let usersRouter = require('./routes/api/users');
 
@@ -45,7 +44,7 @@ app.use('/api/user', usersRouter);
 
 
 // error handling middleware for HTTPBaseError type errors
-app.use(HttpErrorHandler());
+app.use(HttpErrorHandler);
 
 // error handling middleware for other type of errors
 app.use(errorHandler)
