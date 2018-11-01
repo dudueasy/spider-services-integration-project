@@ -3,16 +3,14 @@ let express = require('express');
 let path = require('path');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser')
-
 let session = require('express-session')
-let indexRouter = require('./routes/api/index');
-let usersRouter = require('./routes/api/users');
 
+let indexRouter = require('./routes/api/index_route');
+let usersRouter = require('./routes/api/users_route');
 let logger = require('./utils/loggers/logger')
-
 let HttpErrorHandler = require('./middlewares/http_error_handler')
 let errorHandler = require('./middlewares/error_handler')
-
+let overallErrorHandler = require('./middlewares/overall_error_handler')
 
 // connect to mongodb
 require('./services/mongodb_connection.js')
@@ -25,7 +23,7 @@ app.set('view engine', 'ejs');
 
 // app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 
 // apply express-session middleware
@@ -39,6 +37,13 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('*', (req, res, next) => {
+  console.log('request type: ', req.method)
+  console.log('request path: ', req.path)
+  console.log('request body: ', req.body)
+  next()
+})
+
 app.use('/api', indexRouter);
 app.use('/api/user', usersRouter);
 
@@ -49,14 +54,16 @@ app.use(HttpErrorHandler);
 // error handling middleware for other type of errors
 app.use(errorHandler)
 
-process.on('uncaughtException' ,(err)=>{
-  logger('error', 'uncaughtException error: %s', err.message)
+process.on('uncaughtException', (err) => {
+  logger('error', 'uncaughtException error: %s', err.message, err.stack)
 })
 
 // for testing uncaightException Event listener
 // triggerUncaughtException()
 
-process.on('unhandledRejection', (reason, p)=>{
-logger('error', 'unhandledRejection error: %s', err.message)
-})
+// process.on('unhandledRejection', (err) => {
+//   logger('error', 'unhandledRejection error: %s', err.message, err.stack)
+// })
+
+app.use(overallErrorHandler)
 module.exports = app;

@@ -1,7 +1,8 @@
 <% if (subscription) { %>
-<% for(let i =0; i< subscription.length; i++) {%>
-<h1><%= subscription[i] %></h1>
-<% }} %>
-<% else{ %>
+<% for(let i = 0; i < subscription.length; i++) { %>
+<h1><%= subscription[i].userId %></h1>
+<p><%= subscription[i].url %></p>
+<% } %>
+<% } else { %>
 <h1>no subscription found</h1>
 <% } %>
