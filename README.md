@@ -1,23 +1,49 @@
 # 项目说明
-这是一个 express & mongoose & authentication boilerplate
+An Express & Mongoose & JWT & Spider Boilerplate
 
 ## 功能实现
-  * 数据库使用 mongodb + mongoose
-  * 登陆验证通过 JWT 实现
+  * 数据库: mongodb + mongoose
+  * 用户鉴权: JWT
+  * Spider: axios & cheerio
   * 测试
-    * 模拟页面: ``` localhost:3000/api/login?username=apolo ```
+    * 获取用户列表 'localhost:3000/api/'
 
-    * 模拟登陆页面:
-        * for JWT (request header is required): ``` localhost:3000/api/hello ```
-        * for express-session: ``` localhost:3000/api/hello-session ```
+## 交互逻辑
+routes <-> services <-> model
 
 ## 文件结构
 * 项目入口: /bin/www
 * 数据库: /db
-* 用户数据表: process.env.DB_USERTABLE
+    * 用户数据库名: process.env.DB_USERTABLE
+* 日志文件: /logs
+* 路由: /routes
+* 中间服务层: /services
+* Model: /models
 
-## 项目配置
-通过 dotenv 和 .env 文件定义环境变量
+## 启动前配置
+### 依赖:  mongoDB
+
+### 所需配置项
+启用项目前, 用户需要通过 dotenv 和 .env 文件定义以下环境变量:
+
+~~~
+# database name
+DB_USERTABLE
+
+# configuration for spider
+RESOURCE_URL
+CONTENT_SELECTOR
+
+# pbkdf2 password hash params
+SALT
+ITERATION_TIMES
+KEY_LEN
+DIGEST
+
+# JWT options
+JWT_SECRETKEY
+JWT_TOKEN_EXPIRESIN
+~~~
 
 ## 启动项目:
 * 启动 mongdb 数据库:
