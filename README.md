@@ -36,27 +36,33 @@ npm start
 ## api
 ### under '/api'
 * GET '/'
+
 Return users list
 
 * POST 'login'
+
 For user login
 Require username & password in request body
 
 
 ### under '/api/user'
 * POST '/'
+
 For register an user
 Require name, username, password in request body
 
 * GET '/:userId'
+
 Return corresponding user data
 
 * POST '/:userId/subscription'
+
 Create a subscription for corresponding user.
 Login is required
 Require url in request body
 
 * GET '/:userId/subscription'
+
 Return corresponding user subscription info
 Login is required
 
