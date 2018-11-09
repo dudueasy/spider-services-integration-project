@@ -47,23 +47,19 @@ app.use('*', (req, res, next) => {
 app.use('/api', indexRouter);
 app.use('/api/user', usersRouter);
 
-
+/* -- error handling starts here -- */
 // error handling middleware for HTTPBaseError type errors
 app.use(HttpErrorHandler);
 
 // error handling middleware for other type of errors
 app.use(errorHandler)
 
+app.use(overallErrorHandler)
+
+/* -- error handling ends here -- */
+
 process.on('uncaughtException', (err) => {
   logger('error', 'uncaughtException error: %s', err.message, err.stack)
 })
 
-// for testing uncaightException Event listener
-// triggerUncaughtException()
-
-// process.on('unhandledRejection', (err) => {
-//   logger('error', 'unhandledRejection error: %s', err.message, err.stack)
-// })
-
-app.use(overallErrorHandler)
 module.exports = app;
