@@ -30,6 +30,7 @@ router.post('/login', async (req, res) => {
   (async () => {
     // console.log(1)
     const {username, password} = req.body;
+
     // result = {token, userFound}
     const result = await UserService.loginWithNamePwd({username, password})
 

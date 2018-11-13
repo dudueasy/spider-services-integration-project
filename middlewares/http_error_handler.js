@@ -25,8 +25,6 @@ function httpErrorHandler(err, req, res, next) {
       code: err.errorCode,
       msg: err.httpMsg
     })
-
-
   } else {
     next(err)
   }

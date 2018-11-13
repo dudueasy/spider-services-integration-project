@@ -1,5 +1,5 @@
 # 项目说明
-An Express & Mongoose & JWT & Spider Boilerplate
+An Express & Mongoose & JWT & Redis & Spider Project
 
 ## 功能实现
   * 数据库: mongodb + mongoose
@@ -59,7 +59,7 @@ node bin/www
 npm start
 ~~~
 
-## api
+## API
 ### under '/api'
 * GET '/'
 

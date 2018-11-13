@@ -37,13 +37,15 @@ app.use(session({
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('*', (req, res, next) => {
-  console.log('request type: ', req.method)
-  console.log('request path: ', req.path)
-  console.log('request body: ', req.body)
+const requestInfoTeller = (req, res, next) => {
+  const requestInformation = {method: req.method, path: req.path, body: req.body}
+  console.log('request information: ', requestInformation)
   next()
-})
+}
 
+app.use('/', requestInfoTeller, (req, res, next) => {
+  res.send("<h1>Welcome!</h1>")
+})
 app.use('/api', indexRouter);
 app.use('/api/user', usersRouter);
 
@@ -54,7 +56,7 @@ app.use(HttpErrorHandler);
 // error handling middleware for other type of errors
 app.use(errorHandler)
 
-app.use(overallErrorHandler)
+// app.use(overallErrorHandler)
 
 /* -- error handling ends here -- */
 
