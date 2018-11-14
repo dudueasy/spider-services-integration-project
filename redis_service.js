@@ -26,7 +26,7 @@ async function generateResourceIdToRedis(minId, maxId) {
       idArr.push(id * 10000 + j);
     }
 
-    let success = await redis.sadd(ID_SET_TO_REDIS_KEY, ...idArr);
+    let success = await redis.sadd(ID_SET_TO_REDIS_KEY, idArr);
   }
 }
 
