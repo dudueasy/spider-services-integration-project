@@ -1,9 +1,9 @@
 # 项目说明
-An Universal Express & Mongodb & JWT & Redis Spider App
+An Universal Express & Mongodb & JWT & Redis Spider App<br>
 一个通用的Express Mongodb JWT Redis 爬虫应用
 
 ## 爬取规则
-适用于使用了有序的, 递增 id 的资源
+适用于使用了有序的, 递增 id 的资源\
 通过范围内的随机 id 以及可定义的爬取间隙来对应反爬虫策略
 
 ## 功能实现
@@ -25,7 +25,7 @@ routes <-> services <-> model
 * Model: /models
 
 ## 启动前配置
-### 依赖:  mongoDB
+### 数据库依赖:  MongoDB & Redis
 
 ### 所需配置项
 启用项目前, 用户需要使用 dotenv 并且通过 .env 文件定义以下环境变量:
@@ -72,31 +72,31 @@ npm start
 ## API
 ### under '/api'
 
-* GET '/'
+#### GET '/'
 Return users list
 
-* POST 'login'
-For user login
+#### POST 'login'
+For user login\
 Require username & password in request body
 
 
 ### under '/api/user'
-* POST '/'
+#### POST '/'
 
-For register an user
+For registering an user\
 Require name, username, password in request body
 
-* GET '/:userId'
+#### GET '/:userId'
 
 Return corresponded user data
 
-* POST '/:userId/subscription'
+#### POST '/:userId/subscription'
 
-Create a subscription for corresponded user
-Login is required
+Create a subscription for corresponded user\
+Login is required\
 Require url in request body
 
-* GET '/:userId/subscription'
+#### GET '/:userId/subscription'
 
 Return corresponded user subscription info
 Login is required
