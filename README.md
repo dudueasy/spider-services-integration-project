@@ -71,17 +71,21 @@ npm start
 
 ## API
 ### under '/api' :
-##### GET '/'
+##### GET '/' 
 Return users list
 
 ##### POST 'login'
 For user login\
-Require username & password in request body 
+Post parameters:
+* username 
+* password 
 
 ### under '/api/user' :
 ##### POST '/' 
 For registering an user\
-Require name, username, password in request body
+Post parameters:
+* username
+* password
 
 ##### GET '/:userId'
 Return corresponded user data
@@ -89,10 +93,12 @@ Return corresponded user data
 ##### POST '/:userId/subscription'
 Create a subscription for corresponded user\
 Login is required\
-Require url in request body
+Get parameters:
+* url
 
 ##### GET '/:userId/subscription'
-Return corresponded user subscription info
+Return corresponded user subscription\
+info
 Login is required
 
 
