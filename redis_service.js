@@ -1,5 +1,6 @@
 /* this module is used to connect redis-server and
- * return functions to provide and insert resource id set from/into redis
+ * return functions to fetch and insert ids from/into resource id set
+ * from redis db;
 */
 
 require('dotenv').config();
@@ -31,13 +32,6 @@ async function generateResourceIdToRedis(minId, maxId) {
 }
 
 async function getRandomResourceIds(count) {
-
-  // let idList = [];
-  // for (let i = 0; i < count; i++) {
-  //
-  //   idList.push(Math.floor(Math.random() * 4000000));
-  // }
-  // return idList;
   return await redis.spop(ID_SET_TO_REDIS_KEY, count);
 }
 
@@ -45,13 +39,19 @@ async function markArticleIdSucceed(id) {
   return await redis.sadd(RETRIEVED_ID_SET_TO_REDIS_KEY, id);
 }
 
-async function idBackInPool(id) {
+async function idBackToPool(id) {
   return await redis.sadd(ID_SET_TO_REDIS_KEY, id);
+}
+
+async function getRemainingIdCount() {
+  return await Number(redis.scard(ID_SET_TO_REDIS_KEY));
 }
 
 module.exports = {
   generateResourceIdToRedis,
   getRandomResourceIds,
   markArticleIdSucceed,
-  idBackInPool,
+  idBackToPool,
+  getRemainingIdCount,
 };
+
