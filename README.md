@@ -1,5 +1,10 @@
 # 项目说明
-An Express & Mongoose & JWT & Redis & Spider Project
+An Universal Express & Mongodb & JWT & Redis Spider App
+一个通用的Express Mongodb JWT Redis 爬虫应用
+
+## 爬取规则
+适用于使用了有序的, 递增 id 的资源
+通过范围内的随机 id 以及可定义的爬取间隙来对应反爬虫策略
 
 ## 功能实现
   * 数据库: mongodb + mongoose
@@ -14,7 +19,6 @@ routes <-> services <-> model
 ## 文件结构
 * 项目入口: /bin/www
 * 数据库: /db
-    * 使用的数据库名: process.env.DB_RESOURCE_DB
 * 日志文件: /logs
 * 路由: /routes
 * 中间服务层: /services
@@ -24,17 +28,20 @@ routes <-> services <-> model
 ### 依赖:  mongoDB
 
 ### 所需配置项
-启用项目前, 用户需要通过 dotenv 和 .env 文件定义以下环境变量:
+启用项目前, 用户需要使用 dotenv 并且通过 .env 文件定义以下环境变量:
 
 ~~~
-# database name
+# Database config for sipder
 DB_RESOURCE_DB
+DB_COLLECTION
+DB_URL
 
-# configuration for spider
+# Configuration for spider
 RESOURCE_URL
 CONTENT_SELECTOR
+INTERVAL
 
-# pbkdf2 password hash params
+# Pbkdf2 password hash params
 SALT
 ITERATION_TIMES
 KEY_LEN
@@ -44,6 +51,9 @@ DIGEST
 JWT_SECRETKEY
 JWT_TOKEN_EXPIRESIN
 ~~~
+
+
+
 
 ## 启动项目:
 * 启动 mongdb 数据库:
@@ -61,12 +71,11 @@ npm start
 
 ## API
 ### under '/api'
-* GET '/'
 
+* GET '/'
 Return users list
 
 * POST 'login'
-
 For user login
 Require username & password in request body
 
@@ -79,17 +88,17 @@ Require name, username, password in request body
 
 * GET '/:userId'
 
-Return corresponding user data
+Return corresponded user data
 
 * POST '/:userId/subscription'
 
-Create a subscription for corresponding user.
+Create a subscription for corresponded user
 Login is required
 Require url in request body
 
 * GET '/:userId/subscription'
 
-Return corresponding user subscription info
+Return corresponded user subscription info
 Login is required
 
 
