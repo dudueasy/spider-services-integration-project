@@ -14,7 +14,7 @@ routes <-> services <-> model
 ## 文件结构
 * 项目入口: /bin/www
 * 数据库: /db
-    * 用户数据库名: process.env.DB_USERTABLE
+    * 使用的数据库名: process.env.DB_RESOURCE_DB
 * 日志文件: /logs
 * 路由: /routes
 * 中间服务层: /services
@@ -28,7 +28,7 @@ routes <-> services <-> model
 
 ~~~
 # database name
-DB_USERTABLE
+DB_RESOURCE_DB
 
 # configuration for spider
 RESOURCE_URL

@@ -35,11 +35,10 @@ switch (process.argv[2]) {
   case 'get_single_article':
     Spider.getSingleArticle(process.argv[3])
       .then(r => {
-        console.log('spider received:', r);
-        console.log('done');
+        console.log('job done!');
       })
       .catch(e => {
-        console.log('error happen during task get_single_article: ', e.message);
+        console.log('error happen during task get_single_article: ', e);
         // throw e;
         // process.exit(1);
       });

@@ -1,15 +1,15 @@
 // build mongodb connection with native mongodb driver for nodejs.
 // without using mongoose
 const {MongoClient} = require('mongodb');
-const assert = require('assert');
 require('dotenv').config();
 
 const mongodbUrl = process.env.DB_URL;
-const DBName = process.env.DB_USERDB;
+const DBName = process.env.DB_RESOURCE_DB;
+const collectionName = process.env.DB_COLLECTION
 
 (async () => {
 
-  const client = await MongoClient.connect(mongodbUrl)
+  const client = await MongoClient.connect(mongodbUrl, { useNewUrlParser: true })
     .catch(e => console.log(e));
 
 
