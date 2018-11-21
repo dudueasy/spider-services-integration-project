@@ -101,7 +101,7 @@ Login is required
 
 
 ## 错误处理和日志
-  * 通过 winston 完成错误日志的记录
+  * 通过 winston@2 完成错误日志的记录
   * 流程图:
 ![Error handling flow](./error-handling-flow.png)
 
