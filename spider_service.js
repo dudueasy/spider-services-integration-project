@@ -5,6 +5,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const RedisService = require('./redis_service');
 const {MongoClient} = require('mongodb');
+let logger = require('./utils/loggers/logger');
 
 
 // init mongodb connection options
@@ -14,7 +15,7 @@ const collectionName = process.env.DB_COLLECTION;
 
 // init spider config
 const resourceUrlPrefix = process.env.RESOURCE_URL_PREFIX;
-const spideringInterval = process.env.INTERVAL;
+const spideringInterval = Number(process.env.INTERVAL);
 
 // a function to begin spider, this function does following task:
 // 1. get multiple random resource ids from redis source_id_set
@@ -31,32 +32,35 @@ async function spideringArticles(count) {
     let currentArticleData = await getSingleArticle(id)
       .then(r => {
         succeedCount += 1;
+        console.log('article data fetched');
       })
       .catch(e => {
         errCount += 1;
-        throw e;
+        e.errCount = errCount;
+        console.log(e.message);
       });
 
     // do something with fetched html data
-    console.log(currentArticleData || null);
+    console.log(currentArticleData ? 'data fetched' : null);
 
     // set an interval of 1second (equivalent to time.sleep)
+    console.log('start waiting 1 second');
     await new Promise(resolve => {
-      setTimeout(resolve, parseInt(spideringInterval));
+      setTimeout(resolve, spideringInterval);
     });
+    console.log('end waiting 1 second');
   }
-
-  return {
-    succeedCount,
-    errCount,
-  };
-
+  return {succeedCount, errCount};
 }
 
 // fetch data from resource Url and store it into mongodb database
 async function getSingleArticle(articleId) {
   const client = await MongoClient.connect(mongodbUrl, {useNewUrlParser: true})
-    .catch(e => console.log(e));
+    .catch(e => {
+      logger('error', 'Mongodb connection error: %s', e.message, {stack: e.stack});
+      process.exit(1);
+    });
+
 
   //init mongodb collection
   const db = client.db(DBName);
@@ -105,7 +109,7 @@ async function getSingleArticle(articleId) {
     else {
       console.log('.articleContent not exist');
     }
-    return false;
+    throw new Error('this is not a article resource');
   }
   else {
     /*  successfully get resource data
@@ -117,7 +121,6 @@ async function getSingleArticle(articleId) {
     let articleContentHTML = $(articleContent).toString();
 
 
-    console.log('articleContent: ', articleContent);
     // insert original article content HTML & HTML text and imgs into mongodb collection
     const insertedData = await articleCollection.findOneAndUpdate(
       {resourceId: articleId},
@@ -136,7 +139,6 @@ async function getSingleArticle(articleId) {
     );
 
     await RedisService.markArticleIdSucceed(articleId);
-    console.log('data inserted to mongodb', insertedData);
     return insertedData;
   }
 }

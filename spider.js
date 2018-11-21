@@ -30,6 +30,7 @@ switch (process.argv[2]) {
       })
       .catch(e => {
         console.log('error happen during task start_getting_articles: ', e.message);
+        throw e;
         // process.exit(1);
       });
     break;
@@ -40,7 +41,7 @@ switch (process.argv[2]) {
         console.log('job done!');
       })
       .catch(e => {
-        console.log('error happen during task get_single_article: ', e);
+        console.log('error happen during task get_single_article: ', e.stack);
         throw e;
         // process.exit(1);
       });
@@ -49,19 +50,43 @@ switch (process.argv[2]) {
 
 // run Spider.spideringArticles on the background
 async function getArticleInBG(totalAmount) {
-  const remainingCount = totalAmout ? totalAmout : RedisService.getRemainingIdCount();
+
+  let remainingCount = totalAmount ? totalAmount : RedisService.getRemainingIdCount();
+  console.log(remainingCount);
 
   const numbersPerTime = 5;
+  let attemptCount = 0;
+  let totalErrCount = 0;
+  let totalSuccedCount = 0;
   while (remainingCount >= numbersPerTime) {
     await spiderService.spideringArticles(numbersPerTime)
-      .then(({succeedCount, errCount}) => {
-        console.log(succeedCount, errCount);
+
+      .then(counter => {
+        totalSuccedCount += counter.succeedCount;
+        totalErrCount += counter.errCount;
       })
-      .catch(e => errCount += 1);
+      .catch(err => {
+        logger('error', 'uncaughtException error: %s', err.message);
+      });
+
+    remainingCount -= numbersPerTime;
+    attemptCount += numbersPerTime;
   }
+
+  // logger
+  console.log('info',
+    `job done, attempted fetching ${ attemptCount } resources,
+  success ${totalSuccedCount} times,
+  fail ${totalErrCount} times `);
 }
 
 process.on('uncaughtException', (err) => {
   logger('error', 'uncaughtException error: %s', err.message, err.stack);
+  // process.exit(1);
 });
 
+
+process.on('unhandledRejection', (err) => {
+  logger('error', 'uncaughtException error: %s', err.message, err.stack);
+  // process.exit(1);
+});
