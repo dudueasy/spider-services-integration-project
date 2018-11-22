@@ -52,12 +52,13 @@ switch (process.argv[2]) {
 async function getArticleInBG(totalAmount) {
 
   let remainingCount = totalAmount ? totalAmount : RedisService.getRemainingIdCount();
-  console.log(remainingCount);
+  console.log(` 需要爬取的次数: ${ remainingCount}`);
 
   const numbersPerTime = 5;
   let attemptCount = 0;
   let totalErrCount = 0;
   let totalSuccedCount = 0;
+
   while (remainingCount >= numbersPerTime) {
     await spiderService.spideringArticles(numbersPerTime)
 
@@ -76,8 +77,8 @@ async function getArticleInBG(totalAmount) {
   // logger
   console.log('info',
     `job done, attempted fetching ${ attemptCount } resources,
-  success ${totalSuccedCount} times,
-  fail ${totalErrCount} times `);
+success ${totalSuccedCount} times,
+fail ${totalErrCount} times `);
 }
 
 process.on('uncaughtException', (err) => {

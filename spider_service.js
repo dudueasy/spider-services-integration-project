@@ -5,6 +5,7 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const RedisService = require('./redis_service');
 const {MongoClient} = require('mongodb');
+let db;
 let logger = require('./utils/loggers/logger');
 
 
@@ -28,11 +29,10 @@ async function spideringArticles(count) {
   let errCount = 0;
 
   for (let id of ids) {
-    console.log('id: ', id);
     let currentArticleData = await getSingleArticle(id)
       .then(r => {
         succeedCount += 1;
-        console.log('article data fetched');
+        console.log('Success! Article data fetched!!');
       })
       .catch(e => {
         errCount += 1;
@@ -41,20 +41,20 @@ async function spideringArticles(count) {
       });
 
     // do something with fetched html data
-    console.log(currentArticleData ? 'data fetched' : null);
 
     // set an interval of 1second (equivalent to time.sleep)
-    console.log('start waiting 1 second');
+    // console.log('start waiting 1 second');
     await new Promise(resolve => {
       setTimeout(resolve, spideringInterval);
     });
-    console.log('end waiting 1 second');
+    // console.log('end waiting 1 second');
   }
   return {succeedCount, errCount};
 }
 
 // fetch data from resource Url and store it into mongodb database
 async function getSingleArticle(articleId) {
+
   const client = await MongoClient.connect(mongodbUrl, {useNewUrlParser: true})
     .catch(e => {
       logger('error', 'Mongodb connection error: %s', e.message, {stack: e.stack});
@@ -63,7 +63,7 @@ async function getSingleArticle(articleId) {
 
 
   //init mongodb collection
-  const db = client.db(DBName);
+  if (!db) db = client.db(DBName);
   const articleCollection = db.collection(collectionName);
   const userCollection = db.collection('users');
 
@@ -104,12 +104,12 @@ async function getSingleArticle(articleId) {
     // if url link to video, do something
     const isVideoResource = $('#player');
     if (isVideoResource) {
-      console.log('this is video resource');
+      console.log('this is a video resource');
     }
     else {
       console.log('.articleContent not exist');
     }
-    throw new Error('this is not a article resource');
+    throw new Error('target url does not link to a article resource');
   }
   else {
     /*  successfully get resource data
