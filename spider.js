@@ -7,8 +7,9 @@
 const RedisService = require('./redis_service');
 const spiderService = require('./spider_service');
 let logger = require('./utils/loggers/logger');
+let defaultTask = process.env.DEFAULT_TASK;
 
-switch (process.argv[2]) {
+switch (defaultTask) {
   case 'generate_ids':
     RedisService.generateResourceIdToRedis(Number(process.argv[3]), Number(process.argv[4]))
       .then((success) => {
@@ -22,11 +23,12 @@ switch (process.argv[2]) {
       });
     break;
 
-  //
+  // process.argv[3] as amount of resources to process.
   case 'start_getting_articles':
-    getArticleInBG(process.argv[3])
+    getArticleInBG(process.argv[3] || process.env.TARGET_COUNT)
       .then(r => {
-        console.log('done');
+        console.log('start_getting_articles job done');
+        process.exit(0)
       })
       .catch(e => {
         console.log('error happen during task start_getting_articles: ', e.message);
@@ -51,7 +53,7 @@ switch (process.argv[2]) {
 // run Spider.spideringArticles on the background
 async function getArticleInBG(totalAmount) {
 
-  let remainingCount = totalAmount ? totalAmount : RedisService.getRemainingIdCount();
+  let remainingCount = totalAmount ? parseInt(totalAmount) : RedisService.getRemainingIdCount();
   console.log(` 需要爬取的次数: ${ remainingCount}`);
 
   const numbersPerTime = 5;

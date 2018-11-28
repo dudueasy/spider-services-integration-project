@@ -31,17 +31,19 @@ routes <-> services <-> model
 启用项目前, 用户需要使用 dotenv 并且通过 .env 文件定义以下环境变量:
 
 ~~~
-# Database config for sipder
+# config for mongodb
 DB_RESOURCE_DB
 DB_COLLECTION
 DB_URL
 
-# Configuration for spider
-RESOURCE_URL
+# configuration for spider
+DEFAULT_TASK
+RESOURCE_URL_PREFIX
 CONTENT_SELECTOR
+TARGET_COUNT
 INTERVAL
 
-# Pbkdf2 password hash params
+# pbkdf2 params
 SALT
 ITERATION_TIMES
 KEY_LEN
@@ -50,6 +52,13 @@ DIGEST
 # JWT options
 JWT_SECRETKEY
 JWT_TOKEN_EXPIRESIN
+
+# Redis options
+# -- the key of resource Ids set in redis
+ID_SET_TO_REDIS_KEY
+
+# --the key of retrieved Ids set in redis
+RETRIEVED_ID_SET_TO_REDIS_KEY
 ~~~
 
 
@@ -60,7 +69,7 @@ JWT_TOKEN_EXPIRESIN
 ~~~
 mongod --dbpath db
 ~~~
-* 启动项目
+* 启动服务器
 ~~~
 node bin/www
 ~~~
@@ -68,7 +77,16 @@ node bin/www
 ~~~
 npm start
 ~~~
-
+* 启动爬虫
+默认每次爬取100条数据, 通过 .env 中的 TARGET_COUNT 字段定义.
+前台启动:
+~~~
+node spider
+~~~
+后台启动
+~~~
+npm run run:spider
+~~~
 ## API
 ##### GET '/api' 
 Return users list

@@ -1,6 +1,7 @@
 // this module is used to get html data from resourceUrl,
 // return an array of text & img src from retrieved dom
-require('dotenv').config();
+const path =require('path')
+require('dotenv').config({path: path.join(__dirname, ".env")});
 const axios = require('axios');
 const cheerio = require('cheerio');
 const RedisService = require('./redis_service');

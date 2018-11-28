@@ -3,7 +3,8 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const express = require('express');
 
-require('dotenv').config();
+const path = require('path')
+require('dotenv').config({path: path.join(__dirname, '.env')});
 
 const app = express();
 const PORT = 8001;

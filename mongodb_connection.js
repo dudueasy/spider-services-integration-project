@@ -1,7 +1,8 @@
 // build mongodb connection with native mongodb driver for nodejs.
 // without using mongoose
 const {MongoClient} = require('mongodb');
-require('dotenv').config();
+const path =require('path')
+require('dotenv').config({path: path.join(__dirname, '.env')});
 
 const mongodbUrl = process.env.DB_URL;
 const DBName = process.env.DB_RESOURCE_DB;

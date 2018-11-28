@@ -1,7 +1,8 @@
 const express = require('express');
 const axios = require('axios');
 const cheerio = require('cheerio');
-require('dotenv').config();
+const path =require('path')
+require('dotenv').config({path: path.join(__dirname, '.env')});
 
 let resourceID = ''
 // let resourceID = '4716672';

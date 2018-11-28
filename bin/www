@@ -4,7 +4,8 @@
  * Module dependencies.
  */
 
-require('dotenv').config()
+const path = require('path')
+require('dotenv').config({path: path.join(__dirname, '../.env')})
 let app = require('../app');
 let debug = require('debug')('express-generator-demo:server');
 let http = require('http');

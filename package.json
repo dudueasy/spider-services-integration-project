@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "mongod --dbpath db & nodemon --inspect ./bin/www"
+    "start": "mongod --dbpath db & nodemon --inspect ./bin/www",
+    "run:spider":"pm2 start spider.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
