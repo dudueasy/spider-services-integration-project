@@ -1,14 +1,25 @@
 // this module is used to get html data from resourceUrl,
 // return an array of text & img src from retrieved dom
-const path =require('path')
+const path = require('path');
 require('dotenv').config({path: path.join(__dirname, ".env")});
 const axios = require('axios');
 const cheerio = require('cheerio');
 const RedisService = require('./redis_service');
+const moment = require('moment');
 const {MongoClient} = require('mongodb');
-let db;
+const jieba = require('nodejieba');
 let logger = require('./utils/loggers/logger');
 
+// init a db connection placeholder
+let db;
+
+class Tag {
+  constructor(tagName, value, score) {
+    this.name = tagName;
+    this.value = value;
+    this.score = score;
+  }
+}
 
 // init mongodb connection options
 const mongodbUrl = process.env.DB_URL;
@@ -24,7 +35,6 @@ const spideringInterval = Number(process.env.INTERVAL);
 // 2. retrieve html data for each id
 // 3.
 async function spideringArticles(count) {
-
   const ids = await RedisService.getRandomResourceIds(count);
   let succeedCount = 0;
   let errCount = 0;
@@ -55,13 +65,11 @@ async function spideringArticles(count) {
 
 // fetch data from resource Url and store it into mongodb database
 async function getSingleArticle(articleId) {
-
   const client = await MongoClient.connect(mongodbUrl, {useNewUrlParser: true})
     .catch(e => {
       logger('error', 'Mongodb connection error: %s', e.message, {stack: e.stack});
       process.exit(1);
     });
-
 
   //init mongodb collection
   if (!db) db = client.db(DBName);
@@ -98,7 +106,41 @@ async function getSingleArticle(articleId) {
 
   const $ = cheerio.load(HTMLData.data);
 
+  // init a tags for resource related tags
+  // including category and user defined tags
+  let tags = [];
+
   let articleContent = $('.article-content')[0];
+  let title = $('.caption').text();
+
+  // get divided tags from article title
+  const titleTags = jieba.extract(title, 5);
+
+  for (let tag of titleTags) {
+    tags.push(new Tag('ARTICLE_TAG_TITLE', tag.word.trim(), tag.weight));
+  }
+
+  //retrieve article category from HTML data
+  let articleTags = $('.article-parent').text().split('>');
+  console.log('articleTags', articleTags);
+
+  articleTags.forEach(tag => {
+    tags.push(new Tag('ARTICLE_CATEGORY', tag.trim(), 1));
+  });
+
+  //retrieve user defined tags from HTML data
+  let userDefinedTags = [];
+  let userTagsResponse = await axios(`http://www.acfun.cn/member/collect_up_exist.aspx?contentId=${articleId}`);
+  userTagsResponse.data.data.tagList.forEach(({tagName}) => {
+    userDefinedTags.push(tagName);
+  });
+
+  userDefinedTags.forEach(tag => {
+    tags.push(new Tag('ARTICLE_TAG_USER', tag.trim(), 1));
+  });
+
+
+  let originCreateAt = $('.up-time').text();
 
   // if .aiticleContent not exist  (url doesn't link to an article)
   if (!articleContent) {
@@ -121,7 +163,6 @@ async function getSingleArticle(articleId) {
     let HTMLTextAndImg = getTextOrImg($, articleContent, []);
     let articleContentHTML = $(articleContent).toString();
 
-
     // insert original article content HTML & HTML text and imgs into mongodb collection
     const insertedData = await articleCollection.findOneAndUpdate(
       {resourceId: articleId},
@@ -131,6 +172,9 @@ async function getSingleArticle(articleId) {
           content: HTMLTextAndImg,
           articleContentHTML: articleContentHTML,
           createAt: Date.now().valueOf(),
+          originalCreateAt: originCreateAt,
+          title: title,
+          tags: tags,
         },
       },
       {
@@ -163,7 +207,6 @@ function getTextOrImg($, Dom, container) {
       getTextOrImg($, child, container);
     });
   }
-
   return container;
 }
 

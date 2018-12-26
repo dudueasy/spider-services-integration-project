@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "mongod --dbpath db & nodemon --inspect ./bin/www",
-    "run:spider":"pm2 start spider.js"
+    "start": "mongod --dbpath db & redis-server & nodemon --inspect ./bin/www",
+    "run:spider": "pm2 start spider.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -19,9 +19,11 @@
     "http-errors": "~1.6.2",
     "ioredis": "^4.2.0",
     "jsonwebtoken": "^8.3.0",
+    "moment": "^2.23.0",
     "mongodb": "^3.1.9",
     "mongoose": "^5.2.5",
     "morgan": "~1.9.0",
+    "nodejieba": "^2.3.0",
     "winston": "~2.4.0",
     "winston-daily-rotate-file": "^3.3.0"
   }

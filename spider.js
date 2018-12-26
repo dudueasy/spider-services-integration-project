@@ -7,7 +7,7 @@
 const RedisService = require('./redis_service');
 const spiderService = require('./spider_service');
 let logger = require('./utils/loggers/logger');
-let defaultTask = process.env.DEFAULT_TASK;
+let defaultTask = process.argv[2]||process.env.DEFAULT_TASK;
 
 switch (defaultTask) {
   case 'generate_ids':
@@ -40,6 +40,7 @@ switch (defaultTask) {
   case 'get_single_article':
     spiderService.getSingleArticle(process.argv[3])
       .then(r => {
+        console.log("result: ", r)
         console.log('job done!');
       })
       .catch(e => {

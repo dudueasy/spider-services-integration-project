@@ -4,3 +4,6 @@ node_modules/
 .env
 db/*
 logs/*
+dump.rdb
+nodejieba_demo.js
+resource_response_handler.js

@@ -23,6 +23,7 @@ routes <-> services <-> model
 * 路由: /routes
 * 中间服务层: /services
 * Model: /models
+* 爬虫命令行入口: /spider.js
 
 ## 启动前配置
 ### 数据库依赖:  MongoDB & Redis
@@ -78,7 +79,7 @@ node bin/www
 npm start
 ~~~
 * 启动爬虫
-默认每次爬取100条数据, 通过 .env 中的 TARGET_COUNT 字段定义.
+默认每次爬取100条数据, 单次爬取数量可以通过 .env 中的 TARGET_COUNT 字段定义.
 前台启动:
 ~~~
 node spider
