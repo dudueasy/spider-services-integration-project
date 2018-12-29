@@ -70,10 +70,17 @@ RETRIEVED_ID_SET_TO_REDIS_KEY
 ~~~
 mongod --dbpath db
 ~~~
+
+* 启动 redis 服务:
+~~~
+redis-server
+~~~
+
 * 启动服务器
 ~~~
 node bin/www
 ~~~
+
 * one step launch all
 ~~~
 npm start

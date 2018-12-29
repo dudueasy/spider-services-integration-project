@@ -22,7 +22,7 @@ const RETRIEVED_ID_SET_TO_REDIS_KEY = process.env.RETRIEVED_ID_SET_TO_REDIS_KEY;
 async function generateResourceIdToRedis(minId, maxId) {
   for (let id = minId; id < maxId; id++) {
     // create a array with 10000 as length
-    const idArr = new Array(10000);
+    const idArr = [];
 
     // insert 10000 ids into redis set each time
     for (let j = 0; j < 10000; j++) {

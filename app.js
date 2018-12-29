@@ -43,9 +43,10 @@ const requestInfoTeller = (req, res, next) => {
   next()
 }
 
-app.use('/', requestInfoTeller, (req, res, next) => {
-  res.send("<h1>Welcome!</h1>")
-})
+// app.use('/', requestInfoTeller, (req, res, next) => {
+//   res.send("<h1>Welcome!</h1>")
+// })
+
 app.use('/api', indexRouter);
 app.use('/api/user', usersRouter);
 
