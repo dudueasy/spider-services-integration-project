@@ -7,13 +7,15 @@
 const RedisService = require('./redis_service');
 const spiderService = require('./spider_service');
 let logger = require('./utils/loggers/logger');
-let defaultTask = process.argv[2]||process.env.DEFAULT_TASK;
+let defaultTask = process.argv[2] || process.env.DEFAULT_TASK;
 
 switch (defaultTask) {
   case 'generate_ids':
-    RedisService.generateResourceIdToRedis(Number(process.argv[3]), Number(process.argv[4]))
+    let startpoint = Number(process.argv[3]);
+    let endpoint = Number(process.argv[4]);
+    RedisService.generateResourceIdToRedis(startpoint, endpoint)
       .then((success) => {
-          console.log('done', success);
+          console.log(`ids from ${startpoint}0000 to ${endpoint}0000 were added to local redis database!` );
           process.exit(0);
         },
       )
@@ -28,7 +30,7 @@ switch (defaultTask) {
     getArticleInBG(process.argv[3] || process.env.TARGET_COUNT)
       .then(r => {
         console.log('start_getting_articles job done');
-        process.exit(0)
+        process.exit(0);
       })
       .catch(e => {
         console.log('error happen during task start_getting_articles: ', e.message);
@@ -40,7 +42,7 @@ switch (defaultTask) {
   case 'get_single_article':
     spiderService.getSingleArticle(process.argv[3])
       .then(r => {
-        console.log("result: ", r)
+        console.log("result: ", r);
         console.log('job done!');
       })
       .catch(e => {
