@@ -1,5 +1,5 @@
 # 项目说明
-An Universal Express & Mongodb & JWT & Redis Spider App<br>
+An Universal Express & Mongodb & JWT & Redis Spider App\
 一个通用的Express Mongodb JWT Redis 爬虫应用
 
 ## 爬取规则
@@ -10,20 +10,18 @@ An Universal Express & Mongodb & JWT & Redis Spider App<br>
   * 数据库: mongodb + mongoose
   * 用户鉴权: JWT
   * Spider: axios & cheerio
-  * 测试
-    * 获取用户列表 'localhost:3000/api/'
 
 ## 交互逻辑
 routes <-> services <-> model
 
 ## 文件结构
-* 项目入口: /bin/www
-* 数据库: /db
-* 日志文件: /logs
-* 路由: /routes
-* 中间服务层: /services
-* Model: /models
-* 爬虫命令行入口: /spider.js
+* 项目入口: bin/www/
+* 数据库: db/
+* 日志文件: logs/
+* 路由: routes/
+* 中间服务层: services/
+* Model: models/
+* 爬虫命令行入口: spider.js
 
 ## 启动前配置
 ### 数据库依赖:  MongoDB & Redis
@@ -62,52 +60,49 @@ ID_SET_TO_REDIS_KEY
 RETRIEVED_ID_SET_TO_REDIS_KEY
 ~~~
 
-
-
-
-## 启动项目:
-* 启动 mongdb 数据库:
+## 如何启动项目:
+### 启动 mongdb 数据库:
 ~~~
 mongod --dbpath db
 ~~~
 
-* 启动 redis 服务:
+### 启动 redis 服务:
 ~~~
 redis-server
 ~~~
 
-* 启动服务器
+### 启动服务器
 ~~~
 node bin/www
 ~~~
 
-* one step launch all
+### one step launch all
 ~~~
 npm start
 ~~~
-* 启动爬虫
+### 启动爬虫
 默认每次爬取100条数据, 单次爬取数量可以通过 .env 中的 TARGET_COUNT 字段定义.
-前台启动:
+  * 前台启动:
 ~~~
 node spider
 ~~~
-后台启动
+ * 后台启动
 ~~~
 npm run run:spider
 ~~~
 
-* 爬虫 cli 接口示例
-创建 redis id set (从0到4100000):
+### 爬虫 cli
+#### 创建 redis id set (从0到4100000):
 ~~~
 node spider.js generate_ids 0 410
 ~~~
 
-开始爬取资源数据 (10000次):
+#### 开始爬取资源数据 (10000次):
 ~~~
 node spider.js start_getting_articles 10000
 ~~~
 
-爬取指定资源数据:
+#### 爬取指定资源数据:
 ~~~
 node spider.js get_single_article id_num
 ~~~
@@ -115,32 +110,27 @@ node spider.js get_single_article id_num
 
 ## API
 ##### GET '/api' 
-Return users list
+返回用户列表数据
 
 ##### POST '/api/login'
-For user login\
-Post parameters:
+用于用户登录, 需要提交以下数据
 * username 
 * password 
 
 ##### POST '/api/user' 
-For registering an user\
-Post parameters:
+用于注册用户, 需要提交一下数据 
 * username
 * password
 
 ##### GET 'api/user/:userId'
-Return corresponded user data
+用于获取对应用户的数据
 
 ##### POST 'api/user/:userId/subscription'
-Create a subscription for corresponded user\
-Login is require\
-Get parameters:
+为指定用户创建一个订阅, 需要登录, 需要以下数据: 
 * url
 
 ##### GET 'api/user/:userId/subscription'
-Return corresponded user subscription info\
-Login is required
+获取对应用户的订阅信息, 需要登录.
 
 
 
