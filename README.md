@@ -95,6 +95,24 @@ node spider
 ~~~
 npm run run:spider
 ~~~
+
+* 爬虫 cli 接口示例
+创建 redis id set (从0到4100000):
+~~~
+node spider.js generate_ids 0 410
+~~~
+
+开始爬取资源数据 (10000次):
+~~~
+node spider.js start_getting_articles 10000
+~~~
+
+爬取指定资源数据:
+~~~
+node spider.js get_single_article id_num
+~~~
+
+
 ## API
 ##### GET '/api' 
 Return users list
