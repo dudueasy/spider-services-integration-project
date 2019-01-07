@@ -14,8 +14,8 @@ let logger = require('./utils/loggers/logger');
 let db;
 
 class Tag {
-  constructor(tagName, value, score) {
-    this.name = tagName;
+  constructor(tagType, value, score) {
+    this.name = tagType;
     this.value = value;
     this.score = score;
   }
