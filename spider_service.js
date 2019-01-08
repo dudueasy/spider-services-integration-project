@@ -1,5 +1,15 @@
-// this module is used to get html data from resourceUrl,
-// return an array of text & img src from retrieved dom
+/*
+Functionality:
+-- this module is used to get html data from resourceUrl,
+-- return an array of text & img src from retrieved dom
+
+Communication with databases:
+-- this module interacts with redis_service module for database
+   connection and  resource id changing
+-- this module build mongodb connection through mongodb package and
+   interact with local mongodb database
+*/
+
 const path = require('path');
 require('dotenv').config({path: path.join(__dirname, ".env")});
 const axios = require('axios');
@@ -10,7 +20,7 @@ const {MongoClient} = require('mongodb');
 const jieba = require('nodejieba');
 let logger = require('./utils/loggers/logger');
 
-// init a db connection placeholder
+// init a mongodb connection placeholder
 let db;
 
 class Tag {
@@ -33,7 +43,6 @@ const spideringInterval = Number(process.env.INTERVAL);
 // a function to begin spider, this function does following task:
 // 1. get multiple random resource ids from redis source_id_set
 // 2. retrieve html data for each id
-// 3.
 async function spideringArticles(count) {
   const ids = await RedisService.getRandomResourceIds(count);
   let succeedCount = 0;
