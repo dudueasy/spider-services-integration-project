@@ -12,8 +12,8 @@ let HttpErrorHandler = require('./middlewares/http_error_handler')
 let errorHandler = require('./middlewares/error_handler')
 let overallErrorHandler = require('./middlewares/overall_error_handler')
 
-// connect to mongodb
-// require('./services/native_mongodb_connection_demo.js')
+// build mongoose database connection for user data
+require('./services/mongoose_db_connection')
 
 let app = express();
 
