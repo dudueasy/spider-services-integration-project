@@ -4,7 +4,7 @@ const path = require('path');
 require('dotenv').config({path: path.join(__dirname, ".env")});
 const axios = require('axios');
 const cheerio = require('cheerio');
-const RedisService = require('./redis_service');
+const RedisService = require('./services/redis_service');
 const moment = require('moment');
 const {MongoClient} = require('mongodb');
 const jieba = require('nodejieba');

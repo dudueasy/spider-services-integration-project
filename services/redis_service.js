@@ -7,7 +7,7 @@ const Redis = require('ioredis');
 const redis = new Redis();
 const path = require('path')
 
-require('dotenv').config({path: path.join(__dirname, ".env") });
+require('dotenv').config({path: path.join(__dirname, "../.env") });
 
 // the key of resource Ids set in redis
 const ID_SET_TO_REDIS_KEY = process.env.ID_SET_TO_REDIS_KEY;

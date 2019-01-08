@@ -4,7 +4,7 @@
 // example1: node spider generate_ids 1 12
 // example2: node spider start_getting_articles
 
-const RedisService = require('./redis_service');
+const RedisService = require('./services/redis_service');
 const spiderService = require('./spider_service');
 let logger = require('./utils/loggers/logger');
 let defaultTask = process.argv[2] || process.env.DEFAULT_TASK;
