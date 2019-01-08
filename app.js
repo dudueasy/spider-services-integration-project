@@ -13,7 +13,7 @@ let errorHandler = require('./middlewares/error_handler')
 let overallErrorHandler = require('./middlewares/overall_error_handler')
 
 // connect to mongodb
-require('./services/mongodb_connection.js')
+// require('./services/mongodb_connection.js')
 
 let app = express();
 
