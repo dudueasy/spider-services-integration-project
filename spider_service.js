@@ -139,7 +139,7 @@ async function getSingleArticle(articleId) {
 
   //retrieve user defined tags from HTML data
   let userDefinedTags = [];
-  let userTagsResponse = await axios(`http://www.acfun.cn/member/collect_up_exist.aspx?contentId=${articleId}`);
+  let userTagsResponse = await axios(`${process.env.USER_DEFINED_TAGS_API}?contentId=${articleId}`);
   userTagsResponse.data.data.tagList.forEach(({tagName}) => {
     userDefinedTags.push(tagName);
   });
