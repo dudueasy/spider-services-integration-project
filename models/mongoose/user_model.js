@@ -54,7 +54,7 @@ async function createUserByNamePwd(userData) {
   );
   console.log('hashPassword :', hashPassword);
 
-  const created = await UserModel.insert({name, username, password: hashPassword});
+  const created = await UserModel.create({name, username, password: hashPassword});
   console.log('user created: ', created);
   return {_id: created._id, name: created.name, username: created.username};
 }
