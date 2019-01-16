@@ -99,8 +99,8 @@
       }, 
       contentList:{
         url: String,
-        frequencyLimit: Number,
-        pageSizeLimit: Number 
+        frequency: Number,
+        pageSize: Number
       } 
     } 
   } 
