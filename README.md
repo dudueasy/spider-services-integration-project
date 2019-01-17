@@ -1,6 +1,7 @@
 # 项目说明
 An Universal Express & Mongodb & JWT & Redis Spider App\
-一个通用的Express Mongodb JWT Redis 爬虫应用
+一个通用的Express Mongodb JWT Redis 爬虫应用推荐聚合项目\
+该项目自带爬虫, 也可通过其他满足聚合协议的爬虫微服务来获取相关资源数据.
 
 ## 爬取规则
 适用于使用了有序的, 递增 id 的资源\
