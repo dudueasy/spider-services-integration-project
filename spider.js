@@ -70,6 +70,7 @@ async function getArticleInBG(totalAmount) {
       .then(counter => {
         totalSuccedCount += counter.succeedCount;
         totalErrCount += counter.errCount;
+        console.log(counter)
       })
       .catch(err => {
         logger('error', 'uncaughtException error: %s', err.message);
@@ -80,8 +81,7 @@ async function getArticleInBG(totalAmount) {
   }
 
   // logger
-  console.log('info',
-    `job done, attempted fetching ${ attemptCount } resources,
+  console.log('info', `job done, attempted fetching ${ attemptCount } resources,
 success ${totalSuccedCount} times,
 fail ${totalErrCount} times `);
 }
