@@ -4,6 +4,7 @@
 // example1: node spider generate_ids 1 12
 // example2: node spider start_getting_articles
 
+const fs = require('fs')
 const RedisService = require('./services/redis_service');
 const spiderService = require('./spider_service');
 let logger = require('./utils/loggers/logger');
@@ -15,7 +16,10 @@ switch (defaultTask) {
     let endpoint = Number(process.argv[4]);
     RedisService.generateResourceIdToRedis(startpoint, endpoint)
       .then((success) => {
-          console.log(`ids from ${startpoint}0000 to ${endpoint}0000 were added to local redis database!` );
+          createAt = Date(Date.now()).toString()
+          let idGenerationRecord = `ids from ${startpoint}0000 to ${endpoint}0000 were added to local redis database at ${createAt}!`
+          fs.writeFileSync('id_generation_record.txt',`\n${idGenerationRecord}`,{encoding:'utf-8',flag:'a'})
+          console.log(idGenerationRecord)
           process.exit(0);
         },
       )
