@@ -55,6 +55,10 @@ switch (defaultTask) {
         // process.exit(1);
       });
     break;
+
+  default:
+    invalidCommandError = new Error('invalid command')
+    throw  invalidCommandError
 }
 
 // run Spider.spideringArticles on the background
