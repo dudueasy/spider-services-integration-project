@@ -152,15 +152,14 @@ async function getSingleArticle(articleId) {
   let originCreateAt = $('.up-time').text();
 
   // if .aiticleContent not exist  (url doesn't link to an article)
-  if (!articleContent) {
+  if (!nodeHasContent($(articleContent))) {
     // if url link to video, do something
-    const isVideoResource = $('#player');
-    if (isVideoResource) {
+    const videoPlayer = $('#player');
+
+    if (nodeHasContent(videoPlayer)) {
       console.log('this is a video resource');
     }
-    else {
-      console.log('.articleContent not exist');
-    }
+
     throw new Error('target url does not link to a article resource');
   }
   else {
@@ -180,7 +179,7 @@ async function getSingleArticle(articleId) {
           resourceId: articleId,
           content: HTMLTextAndImg,
           articleContentHTML: articleContentHTML,
-          createAt: Date.now().valueOf(),
+          createAt: Date(Date.now().valueOf()),
           originalCreateAt: originCreateAt,
           title: title,
           tags: tags,
@@ -197,6 +196,14 @@ async function getSingleArticle(articleId) {
   }
 }
 
+function nodeHasContent(cheerioNode) {
+  if(cheerioNode.length){
+    return cheerioNode.html().trim();
+  }
+  else{
+    return false
+  }
+}
 
 // Insert text and img src from received DOM to received container
 function getTextOrImg($, Dom, container) {
