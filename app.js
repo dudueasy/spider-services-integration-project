@@ -50,6 +50,9 @@ const requestInfoTeller = (req, res, next) => {
 app.use('/api', indexRouter);
 app.use('/api/user', usersRouter);
 
+app.use((req, res, next) => {
+  next(createError(404)); // trigger error handler
+});
 /* -- error handling starts here -- */
 // error handling middleware for HTTPBaseError type errors
 app.use(HttpErrorHandler);
