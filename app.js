@@ -43,9 +43,10 @@ const requestInfoTeller = (req, res, next) => {
   next()
 }
 
-// app.use('/', requestInfoTeller, (req, res, next) => {
-//   res.send("<h1>Welcome!</h1>")
-// })
+app.get('/', function (req, res, next) {
+  res.render('index', { title: "Apolo's Intergrated Spider Project" });
+});
+
 
 app.use('/api', indexRouter);
 app.use('/api/user', usersRouter);
