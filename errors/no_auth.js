@@ -1,6 +1,6 @@
 const HTTPBaseError = require('./http_base_error')
 
-const ERROR_CODE =  401001
+const ERROR_CODE =  40100
 
 class NoAuthError extends HTTPBaseError {
   constructor(msg) {
