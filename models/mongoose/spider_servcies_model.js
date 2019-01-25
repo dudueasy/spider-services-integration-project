@@ -44,6 +44,6 @@ let spiderSchema = new Schema({
   },
 });
 
-const SpiderModel = mongoose.model('SpiderServices', spiderSchema);
-module.exports = SpiderModel
+const SpiderServicesModel = mongoose.model('SpiderServices', spiderSchema);
+module.exports = SpiderServicesModel
 
