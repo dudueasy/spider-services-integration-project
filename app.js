@@ -6,7 +6,6 @@ let bodyParser = require('body-parser')
 let session = require('express-session')
 
 let indexRouter = require('./routes/api/index_route');
-let usersRouter = require('./routes/api/users_route');
 let logger = require('./utils/loggers/logger')
 let HttpErrorHandler = require('./middlewares/http_error_handler')
 let errorHandler = require('./middlewares/error_handler')
@@ -49,7 +48,6 @@ app.get('/', function (req, res, next) {
 
 
 app.use('/api', indexRouter);
-app.use('/api/user', usersRouter);
 
 app.use((req, res, next) => {
   next(createError(404)); // trigger error handler
