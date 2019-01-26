@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
+let logger = require('../../utils/loggers/logger');
+const InternalServerError = require('../../errors/internal_server_error');
 
-let spiderSchema = new Schema({
+let spiderServiceSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -31,7 +33,6 @@ let spiderSchema = new Schema({
   contentList: {
     url: {
       type: String,
-      required: true,
     },
     frequency: {
       type: Number,
@@ -44,6 +45,24 @@ let spiderSchema = new Schema({
   },
 });
 
-const SpiderServicesModel = mongoose.model('SpiderServices', spiderSchema);
-module.exports = SpiderServicesModel
+const SpiderServicesModel = mongoose.model('SpiderServices', spiderServiceSchema);
+
+async function registerSpiderService(spider) {
+  const created = await SpiderServicesModel.create(spider)
+    .catch(err => {
+      logger(
+        'error',
+        'uncaughtException error: %s',
+        err.message, err.stack,
+      );
+
+      throw new InternalServerError('Error during creating spider service');
+    });
+  return created;
+}
+
+module.exports = {
+  model: SpiderServicesModel,
+  registerSpiderService,
+};
 
