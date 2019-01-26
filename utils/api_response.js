@@ -6,20 +6,13 @@ module.exports = (req, res) => {
     res.render('error', {message: err.message, error: err});
   }
 
-  const {userList, sub, userFound, token} = data;
-
   const responseData = {
     code: 0,
-    data: {
-      userList: userList,
-      user: userFound,
-      sub: sub,
-      token,
-    },
+    data: req.data,
   };
 
-  if (token) {
-    res.cookie('jwt-token', JSON.stringify(token));
+  if (data.token) {
+    res.cookie('jwt-token', JSON.stringify(data.token));
   }
 
   res.json(responseData);
