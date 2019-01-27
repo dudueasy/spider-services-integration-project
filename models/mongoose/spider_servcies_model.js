@@ -48,21 +48,27 @@ let spiderServiceSchema = new Schema({
 const SpiderServicesModel = mongoose.model('SpiderServices', spiderServiceSchema);
 
 async function registerSpiderService(spider) {
-  const created = await SpiderServicesModel.create(spider)
-    .catch(err => {
-      logger(
-        'error',
-        'uncaughtException error: %s',
-        err.message, err.stack,
-      );
+  const created = await SpiderServicesModel.create(spider).catch(err => {
+    logger(
+      'error',
+      'uncaughtException error: %s',
+      err.message, err.stack,
+    );
 
-      throw new InternalServerError('Error during creating spider service');
-    });
+    // throw new InternalServerError('Error during creating spider service');
+    throw new InternalServerError(`Error during creating spider service: ${err.message}`);
+  });
   return created;
+}
+
+
+async function updateSpiderService(spiderModel) {
+  return await SpiderServicesModel.findByIdAndUpdate(spiderModel._id, spider._doc,{new: true});
 }
 
 module.exports = {
   model: SpiderServicesModel,
   registerSpiderService,
+  updateSpiderService
 };
 
