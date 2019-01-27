@@ -7,13 +7,13 @@ const spiderService = require('../../services/spider_service');
 router.post('/spider', async (req, res, next) => {
   console.log('进入 admin 中间件');
   try {
-    const {spider} = req.body;
-    const createdSpider = await spiderService.registerSpider(spider);
-    req.data = {spider: createdSpider,};
+    const {service} = req.body;
+    const createdSpider = await spiderService.registerSpider(service);
+    req.data = {spiderService: createdSpider};
     apiRes(req, res);
-  }
-  catch (e) {
-    next(e);
+  } catch (e) {
+    req.err = e;
+    apiRes(req, res);
   }
 });
 
