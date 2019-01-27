@@ -48,7 +48,12 @@ async function registerSpider(spiderService = {name: '', validationUrl: ''}) {
   // 通过校验后, 将 spiderService 微服务的相关数据持久化存储
   spiderService.status = "registered";
 
-  let createdService = await SpiderServicesModel.registerSpiderService(spiderService);
+  let createdService = await SpiderServicesModel.registerSpiderService(spiderService)
+    .catch(e => {
+      throw(e);
+    })
+  ;
+
 
   // 调用微服务的验证 url
   const res = await axios(createdService.validationUrl)
@@ -161,10 +166,10 @@ async function registerSpider(spiderService = {name: '', validationUrl: ''}) {
     for (const key in spiderServiceResponseValidators) {
       spiderServiceResponseValidators[key](res.data[key]);
     }
-    createdService.config = res.data.config;
-    createdService.status = 'validated';
-    const updatedService = await SpiderServicesModel.registerSpiderService(createdService);
-    return updatedService
+    createdService._doc.config = res.data.config;
+    createdService._doc.status = 'validated';
+    const updatedService = await SpiderServicesModel.updateSpiderService(createdService);
+    return updatedService;
   }
 }
 
