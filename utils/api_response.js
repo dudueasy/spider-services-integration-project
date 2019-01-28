@@ -5,7 +5,7 @@ module.exports = (req, res) => {
 
   if (err) {
     logger('error', 'uncaughtException error: %s', err.message, err.stack);
-    res.render('error', {message: err.message, error: err});
+    res.send({code: err.errorCode, msg: err.message});
   }
   else {
     console.log('apiRes receive data from req.data: ', JSON.stringify(data));
