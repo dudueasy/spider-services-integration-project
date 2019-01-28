@@ -11,7 +11,7 @@ class HTTPReqParamError extends HTTPBaseError {
   constructor(paramName, desc) {
 
 // super.constructor(httpStatusCode, httpMsg, errorCode, msg){
-    super(200, `参数错误 : ${desc}`, ERROR_CODE, `${paramName} wrong: ${desc}`);
+    super(400, `参数错误 : ${desc}`, ERROR_CODE, `${paramName} wrong: ${desc}`);
   }
 }
 
