@@ -8,7 +8,7 @@
   title: {type: String, required: true},
   contentType: String,
   content: {type: Mixed},
-  createAt: {type: Number, default: Date.now().valueOf()},
+  createdAt: {type: Number, default: Date.now().valueOf()},
   tags: [{name: String, value: String, score: Number}],
   source: {type: String, required: true} // 资源的来源, 例如 zhihu.com
 ~~~
@@ -28,14 +28,13 @@
 
 ##### 注册服务接口 ##### 
 ~~~ 
-  PATH: /api/service 
+  PATH: /api/admin/spider 
   METHOD: POST 
   CONTENT-TYPE: application/json 
   REQUEST-BODY:{
     service: {
       name: String, // 服务名, 不能与项目中现有的服务重名
-      validationUrl,  // 验证 URL, 爬虫服务需要在这个 URL 被访问时返回正确的数据
-      status //表示服务目前的状态: 已注册/经过验证/运行中/暂停/停止/已更新
+      validationUrl,  // 验证 URL, 爬虫服务需要在这个 URL 被访问时返回正确的数据, 包含了从微服务获取爬虫资源的接口
     } 
   } 
 
