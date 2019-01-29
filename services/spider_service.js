@@ -1,19 +1,20 @@
 const axios = require('axios');
 
-const SpiderServicesModel = require('../models/mongoose/spider_servcies_model');
+const SpiderServicesModel = require('../models/mongoose/spider_services_model');
 const HTTPReqParamError = require('../errors/http_request_param_error');
 const HTTPBaseError = require('../errors/http_base_error');
+const DBQueryError = require('../errors/db_query_error');
+const ContentModel = require('../models/mongoose/spider_services_content_model');
 let logger = require('../utils/loggers/logger');
 
 /*
-* @param spiderService 爬虫服务对象(注册微服务时提供的请求体)
-* @param spiderService.name 服务名, 唯一
-* @param spiderService.url 服务校验地址
-*/
+ * @param spiderService 爬虫服务对象(注册微服务时提供的请求体)
+ * @param spiderService.name 服务名, 唯一
+ * @param spiderService.url 服务校验地址
+ */
 
 // 这里进行爬虫服务的注册
 async function registerSpider(spiderService = {name: '', validationUrl: ''}) {
-  const {name, validationUrl} = spiderService;
   const validators = {
     name: (name) => {
       if (!name) {
@@ -49,28 +50,33 @@ async function registerSpider(spiderService = {name: '', validationUrl: ''}) {
   spiderService.status = "registered";
 
   let createdService = await SpiderServicesModel.registerSpiderService(spiderService)
-    .catch(e => {
-      throw(e);
+    .catch(err => {
+      logger('error',
+        'uncaughtException error: %s',
+        err.message, err.stack,
+      );
+
+      let error = new DBQueryError("查询字段异常", "查询数据库异常");
+      throw(error);
     })
   ;
 
 
   // 调用微服务的验证 url
-  const res = await axios(createdService.validationUrl)
-    .catch(err => {
-      logger(
-        'error',
-        'uncaughtException error: %s',
-        err.message, err.stack,
-      );
+  const res = await axios(createdService.validationUrl).catch(err => {
+    logger(
+      'error',
+      'uncaughtException error: %s',
+      err.message, err.stack,
+    );
 
-      throw new HTTPBaseError(
-        400,
-        '服务验证失败, 请检查爬虫访问是否可用',
-        40200,
-        'error during requesting validation url',
-      );
-    });
+    throw new HTTPBaseError(
+      400,
+      '服务验证失败, 请检查爬虫服务是否可用',
+      40200,
+      'error during requesting validation url',
+    );
+  });
 
   // 处理调用爬虫服务验证 url 获得的返回值, 结构由项目的聚合协议来规定
   if (res && res.data) {
@@ -166,12 +172,134 @@ async function registerSpider(spiderService = {name: '', validationUrl: ''}) {
     for (const key in spiderServiceResponseValidators) {
       spiderServiceResponseValidators[key](res.data[key]);
     }
-    createdService._doc.config = res.data.config;
+    createdService._doc.singleContent = res.data.config.singleContent;
+    createdService._doc.contentList = res.data.config.contentList;
     createdService._doc.status = 'validated';
+
     const updatedService = await SpiderServicesModel.updateSpiderService(createdService);
     return updatedService;
   }
 }
 
-module.exports = {registerSpider};
+// 从微服务 (来自spiderservices 数据库的参数对象) 上获取数据
+async function startFetchingProcess(spiderService) {
+  const {contentList} = spiderService;
+  let {latestId} = contentList;
+  const {url, pageSize, frequency} = contentList;
+  const actualIntervalMills = Math.ceil(1000 / frequency) * 2;
 
+  //  定时爬取数据, 通过 latestID 来保存位置
+  let timerId = setInterval(async () => {
+
+    // 从爬虫服务获取数据并存入数据库, 请求异常时终结定时器
+    latestId = latestId || '';
+    const retrievedContents = await fetchingLists(url, latestId, pageSize)
+      .catch(err => {
+        logger(
+          'error',
+          'error during function fetchingLists(): %s',
+          err.message, {stack: err.stack},
+        );
+        clearInterval(timerId);
+        throw new HTTPBaseError(
+          400,
+          '爬虫数据服务请求异常',
+          40000,
+          "invalid config information",
+        );
+      });
+
+    const wrappedContent = retrievedContents.map((singleContent) => (
+      {
+        spiderServiceContentId: singleContent.contentId,
+        spiderServiceId: spiderService._id,
+        contentType: singleContent.contentType,
+        content: {
+          resourceId: singleContent.resourceId,
+          articleContentHtml: singleContent.content.html,
+          articleContentText: singleContent.content.text,
+          originalCreatedAt: singleContent.originalCreatedAt,
+        },
+        title: singleContent.title,
+        tags: singleContent.tags,
+      }
+    ));
+
+    await ContentModel.insertMany(wrappedContent).catch(err => {
+      logger(
+        'error',
+        'error during querying database: %s',
+        err.message, {stack: err.stack},
+      );
+      clearInterval(timerId);
+
+      throw new DBQueryError("查询异常", "查询数据库异常");
+    })
+    ;
+
+    currentLatestId = wrappedContent[wrappedContent.length - 1].spiderServiceContentId;
+    spiderService.contentList['latestId'] = currentLatestId
+
+
+    SpiderServicesModel.model.findOneAndUpdate(
+      {_id: spiderService._id}, {contentList: spiderService.contentList},
+    ).catch(e =>{
+      console.log("在查询数据库更新 latestId 的时候遇到出现异常:\n")
+      console.log(e)
+    });
+
+
+    if (wrappedContent.length < pageSize) {
+      // stop fetching resource while remained resources are less than the number of pageSize
+      clearInterval(timerId);
+    }
+  }, actualIntervalMills);
+}
+
+// 从微服务接口获取数据, 返回获取到的数据
+async function fetchingLists(url, latestId, pageSize) {
+  console.log(`正在从 ${url} 获取${pageSize} 条数据`)
+  return await axios.get(url, {
+    params:
+      {latestId: latestId, pageSize: pageSize},
+  })
+    .then(
+      res => {
+        let {contentList} = res.data;
+        return contentList;
+      })
+    .catch(
+      (err) => {
+        logger(
+          'error',
+          'error fetching content from spider content API: %s',
+          err.message, {stack: err.stack},
+        );
+
+        throw err
+      });
+}
+
+// 从聚合项目数据库中所有已注册的爬虫微服务获取文章数据
+async function initSpiders() {
+  const spiderServices = await SpiderServicesModel.model.find({status: 'validated'});
+  for (let i = 0; i < spiderServices.length; i++) {
+    startFetchingProcess(spiderServices[i]._doc).catch(err => {
+      logger(
+        'error',
+        'error during function startFetchingProcess: %s',
+        err.message, {stack: err.stack},
+      );
+    });
+  }
+}
+
+initSpiders().catch(err => {
+  logger(
+    'error',
+    'error during function initSpider: %s',
+    err.message, {stack: err.stack},
+  );
+});
+
+module.exports = {registerSpider};
