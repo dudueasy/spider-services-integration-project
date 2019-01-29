@@ -42,6 +42,7 @@ let spiderServiceSchema = new Schema({
       type: Number,
       default: 10,
     },
+    latestId: String,
   },
 });
 
@@ -63,7 +64,7 @@ async function registerSpiderService(spider) {
 
 
 async function updateSpiderService(spiderModel) {
-  return await SpiderServicesModel.findByIdAndUpdate(spiderModel._id, spider._doc,{new: true});
+  return await SpiderServicesModel.findByIdAndUpdate(spiderModel._id, spiderModel._doc,{new: true});
 }
 
 module.exports = {
