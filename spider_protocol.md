@@ -4,11 +4,12 @@
 符合本平台推荐内容的数据, 结构应该如下: 
 ~~~
 // Mongoose Schema
-  contentId: {type: String, required: true },
+  resourceId: {type: String, required: true },
   title: {type: String, required: true},
   contentType: String,
   content: {type: Mixed},
-  createdAt: {type: Number, default: Date.now().valueOf()},
+  createdAt: String,
+  originalCreatedAt: String,
   tags: [{name: String, value: String, score: Number}],
   source: {type: String, required: true} // 资源的来源, 例如 zhihu.com
 ~~~
