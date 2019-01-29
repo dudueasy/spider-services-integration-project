@@ -42,16 +42,15 @@ const requestInfoTeller = (req, res, next) => {
   next()
 }
 
+// app.use('*', requestInfoTeller)
+
 app.get('/', function (req, res, next) {
   res.render('index', { title: "Apolo's Intergrated Spider Project" });
 });
 
-
 app.use('/api', indexRouter);
 
-app.use((req, res, next) => {
-  next(createError(404)); // trigger error handler
-});
+
 /* -- error handling starts here -- */
 // error handling middleware for HTTPBaseError type errors
 app.use(HttpErrorHandler);
@@ -59,8 +58,10 @@ app.use(HttpErrorHandler);
 // error handling middleware for other type of errors
 app.use(errorHandler)
 
-// app.use(overallErrorHandler)
 
+// app.use((req, res, next) => {
+//   next(createError(404)); // trigger error handler
+// });
 /* -- error handling ends here -- */
 
 process.on('uncaughtException', (err) => {
