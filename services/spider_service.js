@@ -188,9 +188,8 @@ async function startFetchingProcess(spiderService) {
   const {url, pageSize, frequency} = contentList;
   const actualIntervalMills = Math.ceil(1000 / frequency) * 2;
 
-  //  定时爬取数据, 通过 latestID 来保存位置
-  let timerId = setInterval(async () => {
-
+  // 循环爬取数据, 通过 latestID 来保存位置
+  while (true) {
     // 从爬虫服务获取数据并存入数据库, 请求异常时终结定时器
     latestId = latestId || '';
     const retrievedContents = await fetchingLists(url, latestId, pageSize)
@@ -200,7 +199,6 @@ async function startFetchingProcess(spiderService) {
           'error during function fetchingLists(): %s',
           err.message, {stack: err.stack},
         );
-        clearInterval(timerId);
         throw new HTTPBaseError(
           400,
           '爬虫数据服务请求异常',
@@ -231,34 +229,40 @@ async function startFetchingProcess(spiderService) {
         'error during querying database: %s',
         err.message, {stack: err.stack},
       );
-      clearInterval(timerId);
-
       throw new DBQueryError("查询异常", "查询数据库异常");
     })
     ;
 
     currentLatestId = wrappedContent[wrappedContent.length - 1].spiderServiceContentId;
-    spiderService.contentList['latestId'] = currentLatestId
+    spiderService.contentList['latestId'] = currentLatestId;
 
 
-    SpiderServicesModel.model.findOneAndUpdate(
-      {_id: spiderService._id}, {contentList: spiderService.contentList},
-    ).catch(e =>{
-      console.log("在查询数据库更新 latestId 的时候遇到出现异常:\n")
-      console.log(e)
+    updatedSpiderService = await SpiderServicesModel.model.findOneAndUpdate(
+      {_id: spiderService._id},
+      {contentList: spiderService.contentList},
+      {
+        new: 1,
+        projection: {contentList: 1},
+      },
+    ).catch(e => {
+      console.log("在查询数据库更新 latestId 的时候遇到出现异常:\n");
+      console.log(e);
     });
+
+    latestId = updatedSpiderService._doc.contentList.latestId;
+    console.log("latestId :", latestId);
 
 
     if (wrappedContent.length < pageSize) {
       // stop fetching resource while remained resources are less than the number of pageSize
-      clearInterval(timerId);
+      break;
     }
-  }, actualIntervalMills);
+  }
 }
 
 // 从微服务接口获取数据, 返回获取到的数据
 async function fetchingLists(url, latestId, pageSize) {
-  console.log(`正在从 ${url} 获取${pageSize} 条数据`)
+  console.log(`正在从 ${url} 获取${pageSize} 条数据`);
   return await axios.get(url, {
     params:
       {latestId: latestId, pageSize: pageSize},
@@ -276,22 +280,29 @@ async function fetchingLists(url, latestId, pageSize) {
           err.message, {stack: err.stack},
         );
 
-        throw err
+        throw err;
       });
 }
 
 // 从聚合项目数据库中所有已注册的爬虫微服务获取文章数据
 async function initSpiders() {
   const spiderServices = await SpiderServicesModel.model.find({status: 'validated'});
-  for (let i = 0; i < spiderServices.length; i++) {
-    startFetchingProcess(spiderServices[i]._doc).catch(err => {
-      logger(
-        'error',
-        'error during function startFetchingProcess: %s',
-        err.message, {stack: err.stack},
-      );
-    });
+  if(!spiderServices){
+    throw new Error('没有爬虫服务可以使用')
   }
+
+  else{
+    console.log('开始从爬虫服务获取数据')
+
+    for (let i = 0; i < spiderServices.length; i++) {
+      startFetchingProcess(spiderServices[i]._doc).catch(err => {
+        logger(
+          'error',
+          'error during function startFetchingProcess: %s',
+          err.message, {stack: err.stack},
+        );
+      });
+    }}
 }
 
 initSpiders().catch(err => {
