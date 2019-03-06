@@ -26,6 +26,7 @@
     "mongoose": "^5.2.5",
     "morgan": "~1.9.0",
     "nodejieba": "^2.3.0",
+    "nodemon": "^1.18.10",
     "winston": "~2.4.0",
     "winston-daily-rotate-file": "^3.3.0"
   }

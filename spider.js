@@ -1,5 +1,5 @@
 // a customized CLI tool
-// used to generate resource id or start fetch data
+// used to generate resource id or start fetching data
 // usage: node spider command minId maxId
 // example1: node spider generate_ids 1 12
 // example2: node spider start_getting_articles

@@ -305,12 +305,13 @@ async function initSpiders() {
     }}
 }
 
-initSpiders().catch(err => {
-  logger(
-    'error',
-    'error during function initSpider: %s',
-    err.message, {stack: err.stack},
-  );
-});
+// 需要提供一个借口来调用这个函数, 从而获取微服务的数据
+// initSpiders().catch(err => {
+//   logger(
+//     'error',
+//     'error during function initSpider: %s',
+//     err.message, {stack: err.stack},
+//   );
+// });
 
 module.exports = {registerSpider};
