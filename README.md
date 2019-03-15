@@ -109,7 +109,7 @@ node spider.js get_single_article id_num
 ~~~
 
 
-## API
+## USER API
 ##### GET '/api' 
 返回用户列表数据
 
@@ -133,6 +133,20 @@ node spider.js get_single_article id_num
 
 ##### GET 'api/user/:userId/subscription'
 获取对应用户的订阅信息, 需要登录.
+
+## Services API
+##### GET '/api/admin/showservices' 
+返回项目已聚合的微服务信息
+
+##### POST '/api/admin/spider'
+向聚合项目提交一个微服务
+* 请求体: 
+ ~~~
+ service: {
+      name: String, // 服务名, 不能与项目中现有的服务重名
+      validationUrl,  // 验证 URL, 爬虫服务需要在这个 URL 被访问时返回正确的数据, 包含了从微服务获取爬虫资源的接口
+    } 
+~~~
 
 # 微服务注册协议和接口 
 ## 单条内容的数据结构 ##
