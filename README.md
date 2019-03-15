@@ -119,7 +119,8 @@ node spider.js get_single_article id_num
 * password 
 
 ##### POST '/api/user' 
-用于注册用户, 需要提交一下数据 
+用于注册用户, 需要提交以下数据 
+* name
 * username
 * password
 
