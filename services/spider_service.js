@@ -314,4 +314,8 @@ async function initSpiders() {
 //   );
 // });
 
-module.exports = {registerSpider};
+async function showSpiders(){
+  return await SpiderServicesModel.model.find()
+}
+
+module.exports = {registerSpider, showSpiders};

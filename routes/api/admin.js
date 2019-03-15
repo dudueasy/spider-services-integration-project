@@ -17,4 +17,11 @@ router.post('/spider', async (req, res, next) => {
   }
 });
 
+
+router.get('/showservices', async(req, res, next)=>{
+  const spiderServices = await spiderService.showSpiders()
+  req.data = {services:spiderServices}
+  apiRes(req, res);
+})
+
 module.exports = router;
