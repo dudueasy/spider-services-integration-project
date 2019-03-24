@@ -144,6 +144,7 @@ async function getSingleArticle(articleId) {
     userDefinedTags.push(tagName);
   });
 
+  // 用户自定义的文章标签
   userDefinedTags.forEach(tag => {
     tags.push(new Tag('ARTICLE_TAG_USER', tag.trim(), 1));
   });
