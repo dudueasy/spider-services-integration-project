@@ -99,16 +99,16 @@ describe('elasticsearch advance test', async () => {
     const doc1 = {
       title: "牛顿是一个炼金术师",
       tags: [
-        {tagValue: "炼金术", tagScore: 5},
-        {tagValue: "牛顿", tagScore: 8},
+        {tagValue: "炼金术", tagScore: 0.3},
+        {tagValue: "牛顿", tagScore: 0.7},
       ],
     };
 
     const doc2 = {
       title: "钢之炼金术真好玩",
       tags: [
-        {tagValue: "炼金术", tagScore: 8},
-        {tagValue: "好玩", tagScore: 3},
+        {tagValue: "炼金术", tagScore: 0.6},
+        {tagValue: "好玩", tagScore: 0.4},
       ],
     };
 
@@ -133,7 +133,7 @@ describe('elasticsearch advance test', async () => {
                   "type": "text",
                 },
                 tagScore: {
-                  "type": "long",
+                  "type": "float",
                 },
               },
             },
@@ -184,7 +184,8 @@ describe('elasticsearch advance test', async () => {
       console.log(r.hits.hits);
     });
 
-    it('should return larger value when searching for 炼金术 with a boost of tag score field on doc2', async () => {
+    it('should return larger value when searching for 炼金术 ' +
+      'with a boost of tag score field on doc2', async () => {
       // 对上文中的文档进行一次 function_score 查询, 用 tags.tagScore 作为 field_value_factor
 
       let queryBody = {
@@ -204,6 +205,7 @@ describe('elasticsearch advance test', async () => {
                 },
                 "field_value_factor": {
                   "field": "tags.tagScore",
+                  "missing": 0,
                 },
               },
             },
@@ -212,13 +214,23 @@ describe('elasticsearch advance test', async () => {
       };
 
 
-      const r = await anotherClient.search({
+      let r = await anotherClient.search({
         index: INDEX,
         type: TYPE,
         body: queryBody,
       });
 
-      console.log(r.hits.hits);
+
+      r = r.hits.hits;
+      console.log(r);
+
+
+      const s1 = r.find(s => s._id === '1')._score;
+      const s2 = r.find(s => s._id === '2')._score;
+
+      console.log('s1:', s1)
+      console.log('s2:', s2)
+      assert.equal(true, s1 < s2);
     });
   });
 });
