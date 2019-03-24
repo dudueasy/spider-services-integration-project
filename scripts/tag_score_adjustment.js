@@ -29,7 +29,7 @@ async function recalculateTagScores() {
   // console.log(cursor);
 
   let count = 0;
-  while (await cursor.hasNext()) {
+  while (await cursor.hasNext() && count < 10) {
     recalculateTag = [];
     doc = await cursor.next();
 
@@ -60,14 +60,20 @@ async function recalculateTagScores() {
     // console.log("titleTags ", titleTags);
 
     recalculateTag = [...titleTags, ...categoryTags, ...userDefinedTags];
-    console.log(recalculateTag);
 
     // 更新文档
 
-    doc.tags = recalculateTag
-    await doc.save()
+    articleCollection.updateOne({_id: doc._id}, {$set: {tags: recalculateTag}})
+      .then(doc => {
+        console.log(`更新后的结果: `, doc);
+      })
+      .catch(e => {
+        logger('error', 'error during updating document: %s', e.message, {stack: e.stack});
+        process.exit(1);
+      });
 
     count++;
+    console.log(count);
   }
 }
 
