@@ -73,6 +73,9 @@ async function recalculateTagScores() {
     count++;
     console.log(count);
   }
+
+  console.log(`${count} documents are processed`)
+  process.exit(0)
 }
 
 switch (process.argv[2]) {
