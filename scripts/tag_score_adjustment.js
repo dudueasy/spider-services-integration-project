@@ -29,7 +29,7 @@ async function recalculateTagScores() {
   // console.log(cursor);
 
   let count = 0;
-  while (await cursor.hasNext() && count < 5) {
+  while (await cursor.hasNext()) {
     recalculateTag = [];
     doc = await cursor.next();
 
@@ -61,6 +61,11 @@ async function recalculateTagScores() {
 
     recalculateTag = [...titleTags, ...categoryTags, ...userDefinedTags];
     console.log(recalculateTag);
+
+    // 更新文档
+
+    doc.tags = recalculateTag
+    await doc.save()
 
     count++;
   }
