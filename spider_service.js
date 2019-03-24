@@ -103,12 +103,10 @@ async function getSingleArticle(articleId) {
           const error = new Error('Internal Server Error');
           error.errorCode = 5000000;
           throw error;
-        }
-        else {
+        } else {
           throw e;
         }
-      }
-      else if (e.request) {
+      } else if (e.request) {
         throw new Error("no response was received");
       }
     });
@@ -123,18 +121,21 @@ async function getSingleArticle(articleId) {
   let title = $('.caption').text();
 
   // get divided tags from article title
-  const titleTags = jieba.extract(title, 5);
+  let titleTags = jieba.extract(title, 5)
+    .sort((a, b) => b.weight - a.weight).map((tag, index, array) => ({...tag, weight: tag.weight / array[0].weight}) );
 
   for (let tag of titleTags) {
     tags.push(new Tag('ARTICLE_TAG_TITLE', tag.word.trim(), tag.weight));
   }
+
+  // 归一化文章资源的标题标签分值
 
   //retrieve article category from HTML data
   let articleTags = $('.article-parent').text().split('>');
   console.log('articleTags', articleTags);
 
   articleTags.forEach(tag => {
-    tags.push(new Tag('ARTICLE_CATEGORY', tag.trim(), 1));
+    tags.push(new Tag('ARTICLE_CATEGORY', tag.trim(), 0.7));
   });
 
   //retrieve user defined tags from HTML data
@@ -146,7 +147,7 @@ async function getSingleArticle(articleId) {
 
   // 用户自定义的文章标签
   userDefinedTags.forEach(tag => {
-    tags.push(new Tag('ARTICLE_TAG_USER', tag.trim(), 1));
+    tags.push(new Tag('ARTICLE_TAG_USER', tag.trim(), 0.5));
   });
 
 
@@ -162,8 +163,7 @@ async function getSingleArticle(articleId) {
     }
 
     throw new Error('target url does not link to a article resource');
-  }
-  else {
+  } else {
     /*  successfully get resource data
     *   store two data into database: one with original Node object
     *     another one only with text and img.src
@@ -198,11 +198,10 @@ async function getSingleArticle(articleId) {
 }
 
 function nodeHasContent(cheerioNode) {
-  if(cheerioNode.length){
+  if (cheerioNode.length) {
     return cheerioNode.html().trim();
-  }
-  else{
-    return false
+  } else {
+    return false;
   }
 }
 
@@ -214,12 +213,10 @@ function getTextOrImg($, Dom, container) {
   if (children.length === 0) {
     if (cheerioDom.text()) {
       container.push(cheerioDom.text());
-    }
-    else if (cheerioDom[0].name === 'img') {
+    } else if (cheerioDom[0].name === 'img') {
       container.push(cheerioDom[0].attribs.src);
     }
-  }
-  else {
+  } else {
     children.map((index, child) => {
       getTextOrImg($, child, container);
     });
