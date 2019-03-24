@@ -29,7 +29,7 @@ async function recalculateTagScores() {
   // console.log(cursor);
 
   let count = 0;
-  while (await cursor.hasNext() && count < 10) {
+  while (await cursor.hasNext()) {
     recalculateTag = [];
     doc = await cursor.next();
 
@@ -39,7 +39,6 @@ async function recalculateTagScores() {
       .sort((a, b) => b.score - a.score)
       .map((tag, index, array) => ({...tag, score: tag.score / array[0].score}));
 
-    console.log(titleTags);
 
     // 资源在网站中的分类标签 , score 定为 0.7
     const categoryTags = doc.tags.filter(tag => tag.name === "ARTICLE_CATEGORY")
@@ -63,9 +62,8 @@ async function recalculateTagScores() {
 
     // 更新文档
 
-    articleCollection.updateOne({_id: doc._id}, {$set: {tags: recalculateTag}})
+    await articleCollection.updateOne({_id: doc._id}, {$set: {tags: recalculateTag}})
       .then(doc => {
-        console.log(`更新后的结果: `, doc);
       })
       .catch(e => {
         logger('error', 'error during updating document: %s', e.message, {stack: e.stack});
