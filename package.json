@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "mongod --dbpath db & redis-server & nodemon --inspect ./bin/www",
-    "run:spider": "pm2 start spider.js"
+    "start": "mongod --dbpath db & redis-server & nodemon ./bin/www",
+    "run:spider": "pm2 start spider.js",
+    "start:spider_services": "node ./scripts/start_fetch_from_validated_services.js start_fetch_from_spider_services"
   },
   "dependencies": {
     "axios": "^0.18.0",
