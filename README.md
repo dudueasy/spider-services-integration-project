@@ -25,12 +25,15 @@ routes <-> services <-> model
 * 爬虫命令行入口: spider.js
 
 ## 启动前配置
-### 数据库依赖:  MongoDB & Redis
+### 数据库依赖:  MongoDB & Redis & Elasticsearch
 
 ### 所需配置项
 启用项目前, 用户需要使用 dotenv 并且通过 .env 文件定义以下环境变量:
 
-~~~
+~~~ 
+# config for server
+PORT
+
 # config for mongodb
 DB_RESOURCE_DB
 DB_COLLECTION
@@ -40,6 +43,7 @@ DB_URL
 DEFAULT_TASK
 RESOURCE_URL_PREFIX
 CONTENT_SELECTOR
+USER_DEFINED_TAGS_API
 TARGET_COUNT
 INTERVAL
 
@@ -59,6 +63,15 @@ ID_SET_TO_REDIS_KEY
 
 # --the key of retrieved Ids set in redis
 RETRIEVED_ID_SET_TO_REDIS_KEY
+
+#elasticsearch
+ES_HOST
+
+# ES_INDEX for content from registered spider content service
+ES_INDEX
+
+# ES_TYPE for content from registered spider content service
+ES_TYPE
 ~~~
 
 ## 如何启动项目:
@@ -72,12 +85,16 @@ mongod --dbpath db
 redis-server
 ~~~
 
+### 启动 elasticsearch 服务:
+请根据相应目录来启用 elasticsearch 服务
+
+
 ### 启动服务器
 ~~~
 node bin/www
 ~~~
 
-### one step launch all
+### one step launch all (请自行启用 elasticsearch 服务)
 ~~~
 npm start
 ~~~
@@ -87,7 +104,7 @@ npm start
 ~~~
 node spider
 ~~~
- * 后台启动
+ * 后台启动 (持续爬取数据)
 ~~~
 npm run run:spider
 ~~~
