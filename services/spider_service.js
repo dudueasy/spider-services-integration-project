@@ -1,4 +1,5 @@
 const axios = require('axios');
+require('./mongoose_db_connection');
 
 const SpiderServicesModel = require('../models/mongoose/spider_services_model');
 const HTTPReqParamError = require('../errors/http_request_param_error');
@@ -6,6 +7,7 @@ const HTTPBaseError = require('../errors/http_base_error');
 const DBQueryError = require('../errors/db_query_error');
 const ContentModel = require('../models/mongoose/spider_services_content_model');
 let logger = require('../utils/loggers/logger');
+const esService = require('./es_service');
 
 /*
  * @param spiderService 爬虫服务对象(注册微服务时提供的请求体)
@@ -207,10 +209,10 @@ async function startFetchingProcess(spiderService) {
         );
       });
 
-    const wrappedContent = retrievedContents.map((singleContent) => (
-      {
+    const wrappedContent = retrievedContents.map((singleContent) => {
+      return {
         spiderServiceContentId: singleContent.contentId,
-        spiderServiceId: spiderService._id,
+        spiderServiceId: spiderService._id.toString(),
         contentType: singleContent.contentType,
         content: {
           resourceId: singleContent.resourceId,
@@ -220,18 +222,27 @@ async function startFetchingProcess(spiderService) {
         },
         title: singleContent.title,
         tags: singleContent.tags,
-      }
-    ));
+      };
+    });
 
-    await ContentModel.insertMany(wrappedContent).catch(err => {
+    const insertedList = await ContentModel.insertMany(wrappedContent).catch(err => {
       logger(
         'error',
         'error during querying database: %s',
         err.message, {stack: err.stack},
       );
       throw new DBQueryError("查询异常", "查询数据库异常");
-    })
-    ;
+    });
+
+    await esService.createOrUpdateContentList(insertedList)
+      .catch(err => {
+        logger(
+          'error',
+          'error during function startFetchingProcess: %s',
+          err.message, {stack: err.stack},
+        );
+      });
+
 
     currentLatestId = wrappedContent[wrappedContent.length - 1].spiderServiceContentId;
     spiderService.contentList['latestId'] = currentLatestId;
@@ -285,14 +296,12 @@ async function fetchingLists(url, latestId, pageSize) {
 }
 
 // 从聚合项目数据库中所有已注册的爬虫微服务获取文章数据
-async function initSpiders() {
+async function startFetchFromSpiderServices() {
   const spiderServices = await SpiderServicesModel.model.find({status: 'validated'});
-  if(!spiderServices){
-    throw new Error('没有爬虫服务可以使用')
-  }
-
-  else{
-    console.log('开始从爬虫服务获取数据')
+  if (!spiderServices) {
+    throw new Error('没有爬虫服务可以使用');
+  } else {
+    console.log('开始从爬虫服务获取数据');
 
     for (let i = 0; i < spiderServices.length; i++) {
       startFetchingProcess(spiderServices[i]._doc).catch(err => {
@@ -302,20 +311,13 @@ async function initSpiders() {
           err.message, {stack: err.stack},
         );
       });
-    }}
+    }
+  }
 }
 
-// 需要提供一个借口来调用这个函数, 从而获取微服务的数据
-// initSpiders().catch(err => {
-//   logger(
-//     'error',
-//     'error during function initSpider: %s',
-//     err.message, {stack: err.stack},
-//   );
-// });
 
-async function showSpiders(){
-  return await SpiderServicesModel.model.find()
+async function showSpiders() {
+  return await SpiderServicesModel.model.find();
 }
 
-module.exports = {registerSpider, showSpiders};
+module.exports = {registerSpider, showSpiders, startFetchFromSpiderServices};
