@@ -46,7 +46,6 @@ switch (defaultTask) {
   case 'get_single_article':
     spiderService.getSingleArticle(process.argv[3])
       .then(r => {
-        console.log("result: ", r);
         console.log('job done!');
       })
       .catch(e => {

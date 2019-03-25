@@ -18,7 +18,8 @@ const RedisService = require('./services/redis_service');
 const moment = require('moment');
 const {MongoClient} = require('mongodb');
 const jieba = require('nodejieba');
-let logger = require('./utils/loggers/logger');
+
+const logger = require('./utils/loggers/logger');
 
 // init a mongodb connection placeholder
 let db;
@@ -92,7 +93,7 @@ async function getSingleArticle(articleId) {
   const HTMLData = await axios(resourceUrl)
     .catch(e => {
       if (e.response) {
-        console.log('get respond with ', e.response.status);
+        // console.log('get respond with ', e.response.status);
 
         if (e.response.status === 404) {
           const error = new Error('Not Found');
@@ -132,7 +133,7 @@ async function getSingleArticle(articleId) {
 
   //retrieve article category from HTML data
   let articleTags = $('.article-parent').text().split('>');
-  console.log('articleTags', articleTags);
+  // console.log('articleTags', articleTags);
 
   articleTags.forEach(tag => {
     tags.push(new Tag('ARTICLE_CATEGORY', tag.trim(), 0.7));
@@ -191,6 +192,9 @@ async function getSingleArticle(articleId) {
         returnOriginal: false,
       },
     );
+
+    console.log("insertedData:  ",insertedData.value._id)
+    // _id = insertedData.value._id
 
     await RedisService.markArticleIdSucceed(articleId);
     return insertedData;
