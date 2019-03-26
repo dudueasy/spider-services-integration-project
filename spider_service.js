@@ -123,7 +123,6 @@ async function getSingleArticle(articleId) {
 
   // get divided tags from article title
   let titleTags = jieba.extract(title, 5)
-    .sort((a, b) => b.weight - a.weight).map((tag, index, array) => ({...tag, weight: tag.weight / array[0].weight}) );
 
   for (let tag of titleTags) {
     tags.push(new Tag('ARTICLE_TAG_TITLE', tag.word.trim(), tag.weight));

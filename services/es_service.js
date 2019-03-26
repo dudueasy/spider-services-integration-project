@@ -18,6 +18,17 @@ async function createEsIndex() {
   });
 }
 
+function normalizeTagScore(tags) {
+  const totalScore = tags.reduce((accumulator, next) => (
+    accumulator + next.score
+  ), 0);
+
+  return tags.map(t => ({
+    value: t.value,
+    score: (t.score / totalScore),
+  }));
+}
+
 // update es index type mapping
 async function updateEsTypeMapping() {
   await client.indices.putMapping({
@@ -31,11 +42,11 @@ async function updateEsTypeMapping() {
         tags: {
           type: "nested",
           properties: {
-            tagValue: {
+            value: {
               "type": "keyword",
               "index": true,
             },
-            tagScore: {
+            score: {
               "type": "float",
             },
           },
@@ -51,7 +62,7 @@ async function createOrUpdateContent(content) {
 
   const doc = {
     title: content.title,
-    tags: content.tags,
+    tags: normalizeTagScore(content.tags),
     serviceId: content.spiderServiceId,
   };
 

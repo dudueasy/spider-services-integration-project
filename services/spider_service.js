@@ -187,13 +187,17 @@ async function registerSpider(spiderService = {name: '', validationUrl: ''}) {
 async function startFetchingProcess(spiderService) {
   const {contentList} = spiderService;
   let {latestId} = contentList;
+  let startedAt;
+  let endedAt;
   const {url, pageSize, frequency} = contentList;
   const actualIntervalMills = Math.ceil(1000 / frequency) * 2;
+  const upsertPromises = [];
 
   // 循环爬取数据, 通过 latestID 来保存位置
   while (true) {
     // 从爬虫服务获取数据并存入数据库, 请求异常时终结定时器
     latestId = latestId || '';
+    startedAt = Date.now();
     const retrievedContents = await fetchingLists(url, latestId, pageSize)
       .catch(err => {
         logger(
@@ -209,8 +213,10 @@ async function startFetchingProcess(spiderService) {
         );
       });
 
+    // 从微服务获取多个数据, 并单独封装每一个数据.
+    // 将每个数据添加到一个 promise 列表中, 用于执行之后的 mongodb findOneAndUpdate 操作.
     const wrappedContent = retrievedContents.map((singleContent) => {
-      return {
+      const wrappedSingleContent = {
         spiderServiceContentId: singleContent.contentId,
         spiderServiceId: spiderService._id.toString(),
         contentType: singleContent.contentType,
@@ -223,9 +229,23 @@ async function startFetchingProcess(spiderService) {
         title: singleContent.title,
         tags: singleContent.tags,
       };
+
+      // push one mongodb update task into a list for promise.all
+      upsertPromises.push(ContentModel.findOneAndUpdate(
+        {
+          spiderServiceContentId: singleContent.contentId,
+        },
+        wrappedSingleContent,
+        {
+          upsert: true,
+          new: true,
+        }));
+
+      return wrappedSingleContent;
     });
 
-    const insertedList = await ContentModel.insertMany(wrappedContent).catch(err => {
+
+    const insertedList = await Promise.all(upsertPromises).catch(err => {
       logger(
         'error',
         'error during querying database: %s',
@@ -234,21 +254,23 @@ async function startFetchingProcess(spiderService) {
       throw new DBQueryError("查询异常", "查询数据库异常");
     });
 
+
     await esService.createOrUpdateContentList(insertedList)
       .catch(err => {
         logger(
           'error',
           'error during function startFetchingProcess: %s',
           err.message, {stack: err.stack},
+          process.exit(1),
         );
       });
 
 
-    currentLatestId = wrappedContent[wrappedContent.length - 1].spiderServiceContentId;
+    let currentLatestId = wrappedContent[wrappedContent.length - 1].spiderServiceContentId;
     spiderService.contentList['latestId'] = currentLatestId;
 
 
-    updatedSpiderService = await SpiderServicesModel.model.findOneAndUpdate(
+    let updatedSpiderService = await SpiderServicesModel.model.findOneAndUpdate(
       {_id: spiderService._id},
       {contentList: spiderService.contentList},
       {
@@ -267,6 +289,14 @@ async function startFetchingProcess(spiderService) {
     if (wrappedContent.length < pageSize) {
       // stop fetching resource while remained resources are less than the number of pageSize
       break;
+    }
+
+    endedAt = Date.now();
+    let timeCosted = endedAt - startedAt;
+    if (timeCosted < actualIntervalMills) {
+      console.log(`wait ${actualIntervalMills - timeCosted} ms to continue`);
+      await new Promise(resv => (
+        setTimeout(resv, (actualIntervalMills - timeCosted))));
     }
   }
 }
@@ -310,6 +340,7 @@ async function startFetchFromSpiderServices() {
           'error during function startFetchingProcess: %s',
           err.message, {stack: err.stack},
         );
+        process.exit(1);
       });
     }
   }
