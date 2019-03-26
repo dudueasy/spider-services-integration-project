@@ -10,6 +10,7 @@ const {MongoClient} = require('mongodb');
 // 建立 mongodb 连接.
 require('../services/mongoose_db_connection');
 
+
 async function recalculateTagScores() {
   const mongodbUrl = process.env.DB_URL;
   const DBName = process.env.DB_RESOURCE_DB;
@@ -53,7 +54,7 @@ async function recalculateTagScores() {
       .map(t => ({
         name: t.name,
         value: t.value,
-        score: 0.4,
+        score: 0.5,
       }));
 
     // console.log("titleTags ", titleTags);
@@ -74,8 +75,8 @@ async function recalculateTagScores() {
     console.log(count);
   }
 
-  console.log(`${count} documents are processed`)
-  process.exit(0)
+  console.log(`${count} documents are processed`);
+  process.exit(0);
 }
 
 switch (process.argv[2]) {
@@ -84,6 +85,11 @@ switch (process.argv[2]) {
       logger('error', 'Mongodb connection error: %s', e.message, {stack: e.stack});
       process.exit(1);
     });
+    break;
+
+  default:
+    console.log('unrecognized command');
+    process.exit(0);
 }
 
 
