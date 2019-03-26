@@ -17,4 +17,5 @@ switch (process.argv[2]) {
 
   default:
     console.log('unknown command');
+    process.exit(0)
 }
