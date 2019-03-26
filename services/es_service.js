@@ -32,7 +32,8 @@ async function updateEsTypeMapping() {
           type: "nested",
           properties: {
             tagValue: {
-              "type": "text",
+              "type": "keyword",
+              "index": true,
             },
             tagScore: {
               "type": "float",
