@@ -86,10 +86,15 @@ redis-server
 ~~~
 
 ### 启动 elasticsearch 服务:
-请根据相应目录来启用 elasticsearch 服务
+1. 请根据 elasticsearch 所在目录来启用 elasticsearch 服务
+
+2. 初始化 elasticsearch 数据库
+~~~
+node scripts/es_index_init.js init_es_index
+~~~
 
 
-### 启动服务器
+### 启动http服务器
 ~~~
 node bin/www
 ~~~
@@ -122,9 +127,14 @@ node spider.js start_getting_articles 10000
 
 #### 爬取指定资源数据:
 ~~~
-node spider.js get_single_article id_num
+node spider.js get_single_article id
 ~~~
 
+### 微服务 cli
+#### 从所有已注册的, 可用的微服务处持续获取资源
+~~~
+node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_services
+~~~
 
 ## USER API
 ##### GET '/api' 
