@@ -6,12 +6,20 @@ let esHost = process.env.ES_HOST;
 let esIndex = process.env.ES_INDEX;
 let esType = process.env.ES_TYPE;
 
-// build elasticsearch connection
+// build Elastic Search connection
 let client = new ElasticSearch.Client({
   host: esHost,
 });
 
-async function initElasticSearch() {
+// create es index
+async function createEsIndex() {
+  await client.indices.create({
+    index: esIndex,
+  });
+}
+
+// update es index type mapping
+async function updateEsTypeMapping() {
   await client.indices.putMapping({
     index: esIndex,
     type: esType,
@@ -66,6 +74,4 @@ async function createOrUpdateContentList(contentList) {
   await Promise.all(ps);
 }
 
-module.exports = {createOrUpdateContent, createOrUpdateContentList};
-
-
+module.exports = {createEsIndex, updateEsTypeMapping, client, createOrUpdateContent, createOrUpdateContentList};
