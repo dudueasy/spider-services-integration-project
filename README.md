@@ -146,6 +146,11 @@ node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_serv
 * username
 * password
 
+##### POST '/api/user/login' 
+用于注册用户, 需要提交以下数据, 返回值是 jwttoken 和用户数据
+* username
+* password
+
 ##### GET 'api/user/:userId'
 用于获取对应用户的数据
 

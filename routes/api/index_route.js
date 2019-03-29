@@ -28,32 +28,6 @@ router.get('/', async function (req, res, next) {
 });
 
 
-// 提交用户登录数据
-router.post('/login', async (req, res, next) => {
-  (async () => {
-    // console.log(1)
-    const {username, password} = req.body;
-
-    // result = {token, userFound}
-    const result = await UserService.loginWithNamePwd({username, password});
-
-    // console.log(2)
-    console.log('result: ', result);
-    return result;
-  })()
-    .then(
-      result => {
-        console.log('result: ', result);
-        req.data = result;
-        apiRes(req, res);
-      })
-    .catch(
-      e => {
-        next(e);
-      },
-    );
-});
-
 router.use('/user', userRouter)
 router.use('/admin', adminRouter)
 
