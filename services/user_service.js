@@ -58,7 +58,7 @@ module.exports.getUserById = UserModel.getOneById
 module.exports.createSubscription = async function (userId, url) {
   const user = UserModel.getOneById(userId)
   if (!user) throw Error('no such user')
-  return await Subscription.insert(userId, url)
+  return await Subscription.upsert(userId, url)
 
   // 用户注册
 }
