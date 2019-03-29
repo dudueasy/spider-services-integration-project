@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 const {ObjectId} = Schema.Types;
 
+// build mongoose connection
+require("../../services/mongoose_db_connection");
+
 const ContentSchema = new Schema({
   spiderServiceContentId: String, // resource _id in it's spider service mongodb database
   spiderServiceId: {

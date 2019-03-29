@@ -1,4 +1,6 @@
 let mongoose = require('mongoose')
+// build mongoose connection
+require("../../services/mongoose_db_connection");
 
 const {Schema} = mongoose
 

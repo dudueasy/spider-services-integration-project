@@ -3,6 +3,9 @@ const {Schema} = mongoose;
 let logger = require('../../utils/loggers/logger');
 const InternalServerError = require('../../errors/internal_server_error');
 
+// build mongoose connection
+require("../../services/mongoose_db_connection");
+
 let spiderServiceSchema = new Schema({
   name: {
     type: String,

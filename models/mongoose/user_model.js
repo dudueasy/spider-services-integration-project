@@ -4,6 +4,9 @@ mongoose.Promise = Promise;
 const {Schema} = mongoose;
 const pbkdf2Sync = require('crypto').pbkdf2Sync;
 
+// build mongoose connection
+require("../../services/mongoose_db_connection");
+
 // import an Error Class for user data validation
 const HTTPReqParamError = require('../../errors/http_request_param_error');
 
