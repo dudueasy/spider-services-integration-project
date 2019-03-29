@@ -1,5 +1,4 @@
 const axios = require('axios');
-require('./mongoose_db_connection');
 
 const SpiderServicesModel = require('../models/mongoose/spider_services_model');
 const HTTPReqParamError = require('../errors/http_request_param_error');
@@ -192,6 +191,19 @@ async function startFetchingProcess(spiderService) {
   const {url, pageSize, frequency} = contentList;
   const actualIntervalMills = Math.ceil(1000 / frequency) * 2;
   const upsertPromises = [];
+
+  // 检查 elasticsearch 连接是否可用
+  await esService.testESConnection()
+    .then(() => {
+      logger("info", "info", "elastic search connection built");
+    })
+    .catch(err => {
+      logger(
+        'error',
+        'error during connection to Elastic Search %s',
+        err.message, {stack: err.stack},
+      );
+    });
 
   // 循环爬取数据, 通过 latestID 来保存位置
   while (true) {
