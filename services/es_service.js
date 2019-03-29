@@ -1,4 +1,5 @@
 const ElasticSearch = require('elasticsearch');
+const spiderServicesContentModel = require('../models/mongoose/spider_services_content_model');
 const path = require('path');
 require('dotenv').config({path: path.join(__dirname, "../.env")});
 
@@ -10,6 +11,20 @@ let esType = process.env.ES_TYPE;
 let client = new ElasticSearch.Client({
   host: esHost,
 });
+
+
+// test Elastic Search connection
+async function testESConnection() {
+  client.ping({
+    requestTimeout: 3000,
+  }, function (error) {
+    if (error) {
+      console.error('elasticsearch cluster is down!');
+    } else {
+      console.log('All is well');
+    }
+  });
+}
 
 // create es index
 async function createEsIndex() {
@@ -80,10 +95,79 @@ async function createOrUpdateContent(content) {
 async function createOrUpdateContentList(contentList) {
   let ps = [];
   for (let content of contentList) {
-    ps.push(createOrUpdateContent(content));
+    ps.push(createOrUpdateContent(content.toObject()));
   }
 
   await Promise.all(ps);
 }
 
-module.exports = {createEsIndex, updateEsTypeMapping, client, createOrUpdateContent, createOrUpdateContentList};
+// 通过标签搜索 es 数据库, 用 es 数据库的查询结果搜索 mongodb 数据库
+// mongodb 的返回结果需要根据 es 评分来排序
+async function searchMongoDBByTag(tag = "", page = 0, pageSize = 10) {
+  let result = await client.search({
+    index: esIndex,
+    type: esType,
+    body: {
+      from: page * pageSize,
+      size: pageSize,
+      "query": {
+        "nested": {
+          "score_mode": "sum", // 匹配的分值是 nested 字段下每次匹配的分值的和
+          "path": "tags",
+          "query": {
+            "function_score": {
+              "query": {
+                "match": {
+                  "tags.value": `${tag}`,
+                },
+              },
+              "field_value_factor": {
+                "field": "tags.score",
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+
+  // 获取 es 中的文档
+  const hits = result.hits.hits;
+
+
+  // 获取 id 集合, 用于向 mongodb 进行搜索
+  const ids = hits.map(document => (document._id));
+  console.log(ids);
+
+
+  //  查询 mongodb 数据库并对结果进行排序 (根据 es 评分)
+  let documents = await spiderServicesContentModel.find({_id: {$in: ids}});
+
+
+  // 将 mongodb 文档进行排序
+  documents.sort((a, b) => {
+    return hits.findIndex(hit => hit._id === a._id.toString())
+      - hits.findIndex(hit => hit._id === b._id.toString());
+  });
+
+
+  // 以下代码用于测试排序是否生效
+  for (let hit of hits) {
+    console.log("es document : ", hit._source.title);
+  }
+
+  for (let document of documents) {
+    console.log("mongodb document : ", document.title);
+  }
+
+  return documents;
+}
+
+module.exports = {
+  createEsIndex,
+  testESConnection,
+  updateEsTypeMapping,
+  createOrUpdateContentList,
+  searchMongoDBByTag,
+};
