@@ -140,13 +140,8 @@ node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_serv
 ##### GET '/api' 
 返回用户列表数据
 
-##### POST '/api/login'
-用于用户登录, 需要提交以下数据
-* username 
-* password 
-
 ##### POST '/api/user' 
-用于注册用户, 需要提交以下数据 
+用于注册用户, 需要提交以下数据, 返回值是 jwttoken
 * name
 * username
 * password
@@ -156,7 +151,12 @@ node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_serv
 
 ##### POST 'api/user/:userId/subscription'
 为指定用户创建一个订阅, 需要登录, 需要以下数据: 
-* url
+* type 
+
+    订阅的资源类型.
+    type 的值是以下集合中的一个值: ['spider_services', 'tag']
+    
+* sourceId
 
 ##### GET 'api/user/:userId/subscription'
 获取对应用户的订阅信息, 需要登录.
