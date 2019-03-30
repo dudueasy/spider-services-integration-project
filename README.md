@@ -152,10 +152,13 @@ node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_serv
 * password
 
 ##### GET 'api/user/:userId'
-用于获取对应用户的数据
+用于获取对应用户的用户数据
+
+##### GET 'api/user/:userId/subscription'
+获取对应用户的订阅信息, **需要登录**.
 
 ##### POST 'api/user/:userId/subscription'
-为指定用户创建一个订阅, 需要登录, 需要以下数据: 
+为指定用户创建一个订阅, **需要登录**, 需要以下数据: 
 * type 
 
     订阅的资源类型.
@@ -163,8 +166,22 @@ node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_serv
     
 * sourceId
 
-##### GET 'api/user/:userId/subscription'
-获取对应用户的订阅信息, 需要登录.
+#### GET 'api/user/:userId/subContent'
+从用户订阅的微服务拉取数据, **需要登录**. 
+* 查询参数:
+
+    page: 表示资源条目所在的页数, 默认为 0
+
+    pageSize: 表示每次拉取的条目数, 默认为 10 
+
+#### 如何通过登录要求?
+由于本项目中使用了 JWT 来实现用户鉴权机制. 
+用户需要首先通过 '/api/user/login' 接口获取登陆的 token. 
+然后在请求头的 Authentication 字段中赋值, 
+字段值以 Bearer 开头, 后接 token 字符串.
+```
+Authentication: Bearer xxxxxxxxxxxxx 
+```
 
 ## Services API
 ##### GET '/api/admin/showservices' 
