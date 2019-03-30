@@ -39,6 +39,7 @@ async function findByUserId(userId) {
 }
 
 module.exports = {
+  model: SubModel,
   upsert,
   list,
   findByUserId,
