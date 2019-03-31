@@ -109,7 +109,7 @@ async function createOrUpdateContentList(contentList) {
 
 // 通过标签搜索 es 数据库, 用 es 数据库的查询结果搜索 mongodb 数据库
 // mongodb 的返回结果需要根据 es 评分来排序
-async function searchMongoDBByTag(tag = "", page, pageSize) {
+async function searchESByTag(tag = "", page, pageSize) {
   page = page || 0;
   pageSize = pageSize || 10;
   let result = await client.search({
@@ -138,11 +138,16 @@ async function searchMongoDBByTag(tag = "", page, pageSize) {
       },
     },
   });
-  // console.log("es result: ", result);
+
+  return result;
+}
+
+// console.log("es result: ", result);
 
 
+async function searchContentByESResults(esResult) {
   // 获取 es 中的文档
-  const hits = result.hits.hits;
+  const hits = esResult.hits.hits;
 
 
   // 获取 id 集合, 用于向 mongodb 进行搜索
@@ -172,6 +177,14 @@ async function searchMongoDBByTag(tag = "", page, pageSize) {
 
   return documents;
 }
+
+
+async function searchMongoDBByTag(tag, page, pageSize) {
+  let esResult = await searchESByTag(tag, page, pageSize);
+  return await searchContentByESResults(esResult);
+}
+
+// async function
 
 module.exports = {
   createEsIndex,
