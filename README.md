@@ -1,15 +1,13 @@
 # 项目说明
-An Universal Express & Mongodb & JWT & Redis Spider App\
-一个通用的Express Mongodb JWT Redis 爬虫应用推荐聚合项目\
-该项目自带爬虫, 也可通过其他满足聚合协议的爬虫微服务来获取相关资源数据.
+一个通用的 Express + Mongodb + Elasticsearch 爬虫微服务聚合项目, 可通过聚合满足聚合协议的爬虫微服务来获取相关资源数据.
 
-## 爬取规则
-适用于使用了有序的, 递增 id 的资源\
-通过范围内的随机 id 以及可定义的爬取间隙来对应反爬虫策略
+具备鉴权机制, 用户可以订阅系统中的微服务来获得数据.
+
+提供数据搜索功能. 可以通过接口实现分页.
 
 ## 功能实现
-  * 数据库: mongodb + mongoose
-  * 用户鉴权: JWT
+  * 数据库: mongodb & Elasticsearch
+  * 用户鉴权机制: JWT
   * Spider: axios & cheerio
 
 ## 交互逻辑
@@ -22,30 +20,21 @@ routes <-> services <-> model
 * 路由: routes/
 * 中间服务层: services/
 * Model: models/
-* 爬虫命令行入口: spider.js
 
 ## 启动前配置
-### 数据库依赖:  MongoDB & Redis & Elasticsearch
+### 数据库依赖:  MongoDB & Elasticsearch
 
 ### 所需配置项
 启用项目前, 用户需要使用 dotenv 并且通过 .env 文件定义以下环境变量:
 
 ~~~ 
 # config for server
-PORT
+PORT 
 
-# config for mongodb
+# config for mongodb (聚合服务数据存储)
 DB_RESOURCE_DB
 DB_COLLECTION
 DB_URL
-
-# configuration for spider
-DEFAULT_TASK
-RESOURCE_URL_PREFIX
-CONTENT_SELECTOR
-USER_DEFINED_TAGS_API
-TARGET_COUNT
-INTERVAL
 
 # pbkdf2 params
 SALT
@@ -55,21 +44,12 @@ DIGEST
 
 # JWT options
 JWT_SECRETKEY
-JWT_TOKEN_EXPIRESIN
-
-# Redis options
-# -- the key of resource Ids set in redis
-ID_SET_TO_REDIS_KEY
-
-# --the key of retrieved Ids set in redis
-RETRIEVED_ID_SET_TO_REDIS_KEY
+JWT_TOKEN_EXPIRESIN 
 
 #elasticsearch
-ES_HOST
-
+ES_HOST 
 # ES_INDEX for content from registered spider content service
-ES_INDEX
-
+ES_INDEX 
 # ES_TYPE for content from registered spider content service
 ES_TYPE
 ~~~
@@ -78,12 +58,7 @@ ES_TYPE
 ### 启动 mongdb 数据库:
 ~~~
 mongod --dbpath db
-~~~
-
-### 启动 redis 服务:
-~~~
-redis-server
-~~~
+~~~ 
 
 ### 启动 elasticsearch 服务:
 1. 请根据 elasticsearch 所在目录来启用 elasticsearch 服务
@@ -103,32 +78,6 @@ node bin/www
 ~~~
 npm start
 ~~~
-### 启动爬虫
-默认每次爬取100条数据, 单次爬取数量可以通过 .env 中的 TARGET_COUNT 字段定义.
-  * 前台启动:
-~~~
-node spider
-~~~
- * 后台启动 (持续爬取数据)
-~~~
-npm run run:spider
-~~~
-
-### 爬虫 cli
-#### 创建 redis id set (从0到4100000):
-~~~
-node spider.js generate_ids 0 410
-~~~
-
-#### 开始爬取资源数据 (10000次):
-~~~
-node spider.js start_getting_articles 10000
-~~~
-
-#### 爬取指定资源数据:
-~~~
-node spider.js get_single_article id
-~~~
 
 ### 微服务 cli
 #### 从所有已注册的, 可用的微服务处持续获取资源
@@ -140,7 +89,9 @@ node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_serv
 #### GET 'api/search/:keyword'
 关键字搜索功能
 * 查询参数: 
+
     page: 表示资源条目所在的页数, 默认为 0 
+    
     pageSize: 表示每次拉取的条目数, 默认为 10 
     
 ## USER API
@@ -169,7 +120,7 @@ node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_serv
 * type 
 
     订阅的资源类型.
-    type 的值是以下集合中的一个值: ['spider_services', 'tag']
+    type 的值是以下集合中的一个值: ['spider_services']
     
 * sourceId
 
