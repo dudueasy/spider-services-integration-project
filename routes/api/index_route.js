@@ -31,15 +31,15 @@ router.get('/', async function (req, res, next) {
 /* Search  content */
 
 //   searchMongoDBByTag(tag = "", page = 0, pageSize = 10)
-router.get('/search/:content', async (req, res, next) => {
-  // console.log("enter api/search/:content middleware")
-  const {content} = req.params;
-  // console.log(content)
+router.get('/search/:keyword', async (req, res, next) => {
+  // console.log("enter api/search/:keyword middleware")
+  const {keyword} = req.params;
+  // console.log(keyword)
   let {page, pageSize} = req.query;
   page = page || 0;
   pageSize = pageSize || 0;
 
-  await esService.searchMongoDBByTag(content, page, pageSize)
+  await esService.searchMongoDBByTag(keyword, page, pageSize)
     .then((contents) => {
 
         req.data = {contents};
