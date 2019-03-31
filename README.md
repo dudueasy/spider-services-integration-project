@@ -136,6 +136,13 @@ node spider.js get_single_article id
 node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_services
 ~~~
 
+## CONTENT API  
+#### GET 'api/search/:keyword'
+关键字搜索功能
+* 查询参数: 
+    page: 表示资源条目所在的页数, 默认为 0 
+    pageSize: 表示每次拉取的条目数, 默认为 10 
+    
 ## USER API
 ##### GET '/api' 
 返回用户列表数据
@@ -183,7 +190,7 @@ node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_serv
 Authentication: Bearer xxxxxxxxxxxxx 
 ```
 
-## Services API
+## SERVICES API
 ##### GET '/api/admin/showservices' 
 返回项目已聚合的微服务信息
 
