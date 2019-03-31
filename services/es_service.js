@@ -6,6 +6,7 @@ require('dotenv').config({path: path.join(__dirname, "../.env")});
 let esHost = process.env.ES_HOST;
 let esIndex = process.env.ES_INDEX;
 let esType = process.env.ES_TYPE;
+const logger = require('../utils/loggers/logger');
 
 // build Elastic Search connection
 let client = new ElasticSearch.Client({
@@ -19,7 +20,12 @@ async function testESConnection() {
     requestTimeout: 3000,
   }, function (error) {
     if (error) {
-      console.error('elasticsearch cluster is down!');
+      logger(
+        'error',
+        'error during testing Elasticsearch connection: %s',
+        err.message, {stack: err.stack},
+      );
+      process.exit(1);
     } else {
       console.log('All is well');
     }
@@ -103,7 +109,9 @@ async function createOrUpdateContentList(contentList) {
 
 // 通过标签搜索 es 数据库, 用 es 数据库的查询结果搜索 mongodb 数据库
 // mongodb 的返回结果需要根据 es 评分来排序
-async function searchMongoDBByTag(tag = "", page = 0, pageSize = 10) {
+async function searchMongoDBByTag(tag = "", page, pageSize) {
+  page = page || 0;
+  pageSize = pageSize || 10;
   let result = await client.search({
     index: esIndex,
     type: esType,
@@ -118,7 +126,7 @@ async function searchMongoDBByTag(tag = "", page = 0, pageSize = 10) {
             "function_score": {
               "query": {
                 "match": {
-                  "tags.value": `${tag}`,
+                  "tags.value": tag,
                 },
               },
               "field_value_factor": {
@@ -130,6 +138,7 @@ async function searchMongoDBByTag(tag = "", page = 0, pageSize = 10) {
       },
     },
   });
+  // console.log("es result: ", result);
 
 
   // 获取 es 中的文档
@@ -138,7 +147,7 @@ async function searchMongoDBByTag(tag = "", page = 0, pageSize = 10) {
 
   // 获取 id 集合, 用于向 mongodb 进行搜索
   const ids = hits.map(document => (document._id));
-  console.log(ids);
+  // console.log(ids);
 
 
   //  查询 mongodb 数据库并对结果进行排序 (根据 es 评分)
@@ -153,13 +162,13 @@ async function searchMongoDBByTag(tag = "", page = 0, pageSize = 10) {
 
 
   // 以下代码用于测试排序是否生效
-  for (let hit of hits) {
-    console.log("es document : ", hit._source.title);
-  }
-
-  for (let document of documents) {
-    console.log("mongodb document : ", document.title);
-  }
+  // for (let hit of hits) {
+  //   console.log("es document : ", hit._source.title);
+  // }
+  //
+  // for (let document of documents) {
+  //   console.log("mongodb document : ", document.title);
+  // }
 
   return documents;
 }
