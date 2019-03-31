@@ -1,10 +1,14 @@
 // this module build mongoose db connection for user data storage & models/*
+const path = require('path');
 const mongoose = require('mongoose');
 let logger = require('../utils/loggers/logger');
 
+require('dotenv').config({path: path.join(__dirname, '../.env')});
 mongoose.Promise = Promise;
 
-const uri = 'mongodb://localhost:27017/apolo';
+const DB_RESOURCE_DB = process.env.DB_RESOURCE_DB;
+
+const uri = `mongodb://localhost:27017/${DB_RESOURCE_DB}`;
 mongoose.connect(uri, {useNewUrlParser: true});
 let db = mongoose.connection;
 
