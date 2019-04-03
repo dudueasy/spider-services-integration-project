@@ -66,9 +66,14 @@ async function registerSpiderService(spider) {
 }
 
 
-async function updateSpiderService(spiderModel) {
-  return await SpiderServicesModel.findByIdAndUpdate(spiderModel._id, spiderModel._doc,{new: true});
+async function updateSpiderService(spiderService) {
+  return await SpiderServicesModel.findByIdAndUpdate(spiderService._id, spiderService._doc,{new: true});
 }
+
+// async function removeSpiderService(spiderService){
+//   return await SpiderServicesModel
+//
+// }
 
 module.exports = {
   model: SpiderServicesModel,

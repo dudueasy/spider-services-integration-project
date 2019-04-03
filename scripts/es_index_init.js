@@ -21,7 +21,7 @@ switch (process.argv[2]) {
         console.log("es index is successfully initialized");
       })
       .catch(
-        e => {
+        err => {
           logger("error", "error during init es index: %s",
             err.message, {stack: err.stack},
           );
