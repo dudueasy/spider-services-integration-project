@@ -5,6 +5,10 @@
 
 提供数据搜索功能. 可以通过接口实现分页.
 
+[ 查看完整文档 ](https://assip.gitbook.io/spider-services-integration-project/)
+
+[ 访问示例服务器 ](http://139.199.87.221:8083/)
+
 ## 功能实现
   * 数据库: mongodb & Elasticsearch
   * 用户鉴权机制: JWT
@@ -105,7 +109,7 @@ node scripts/start_fetch_from_validated_services.js start_fetch_from_spider_serv
 * password
 
 ##### POST '/api/user/login' 
-用于注册用户, 需要提交以下数据, 返回值是 jwttoken 和用户数据
+用于登陆用户, 需要提交以下数据, 返回值是 jwttoken 和用户数据
 * username
 * password
 
@@ -157,19 +161,21 @@ Authentication: Bearer xxxxxxxxxxxxx
 
 # 微服务注册协议和接口 
 ## 单条内容的数据结构 ##
-符合本平台推荐内容的数据, 结构应该如下: 
+符合该聚合项目协议的微服务提供的单条数据结构应该如下:
 ~~~
 // Mongoose Schema
   resourceId: {type: String, required: true },
   title: {type: String, required: true},
   contentType: String,
-  content: {type: Mixed},
+  content: {
+    html: {type: Mixed},
+    text: {type: Mixed}}
+  },
   createdAt: String,
   originalCreatedAt: String,
   tags: [{name: String, value: String, score: Number}],
-  source: {type: String, required: true} // 资源的来源, 例如 zhihu.com
 ~~~
-***
+
 ## 协议 ##
   本协议使用 HTTP/1.1 协议进行通讯, 通过约定一系列的接口, 实现爬虫微服务的接入与聚合推荐系统的数据同步\
   爬虫协议名: FULL_FLEDGED_NET_SPIDER_PROTOCOL/0.1
